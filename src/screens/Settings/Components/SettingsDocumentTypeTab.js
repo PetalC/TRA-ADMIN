@@ -25,7 +25,8 @@ import { useModulePrivileges } from '../../../hooks/userPrivileges/useModulePriv
 import { SIDEBAR_NAMES } from '../../../constants/SidebarConstants';
 
 const documentForOptions = [
-  { label: 'Application', value: 'application', name: 'documentFor' },
+  { label: 'Application Risk', value: 'application_risk', name: 'documentFor' },
+  { label: 'Application Client', value: 'application_client', name: 'documentFor' },
   { label: 'Client', value: 'client', name: 'documentFor' },
   { label: 'Debtor', value: 'debtor', name: 'documentFor' },
 ];
