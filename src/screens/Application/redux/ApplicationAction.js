@@ -4,6 +4,7 @@ import {
 } from '../../../common/GeneralLoader/redux/GeneralLoaderAction';
 import { errorNotification, successNotification } from '../../../common/Toast';
 import { displayErrors } from '../../../helpers/ErrorNotifyHelper';
+import { downloadAll } from '../../../helpers/DownloadHelper';
 import { DashboardApiService } from '../../Dashboard/services/DashboardApiService';
 import { DEBTORS_REDUX_CONSTANTS } from '../../Debtors/redux/DebtorsReduxConstants';
 import ApplicationApiServices from '../services/ApplicationApiServices';
@@ -1210,6 +1211,22 @@ export const applicationDownloadAction = async filters => {
     }
   } catch (e) {
     stopGeneralLoaderOnSuccessOrFail(`applicationDownloadButtonLoaderAction`);
+    displayErrors(e);
+  }
+  return false;
+};
+
+export const applicationFormDownloadAction = async () => {
+  startGeneralLoaderOnRequest('applicationDownloadFormButtonLoaderAction');
+  try {
+    const response = await ApplicationApiServices.downloadApplicationForm();
+    if (response?.statusText === 'OK') {
+      stopGeneralLoaderOnSuccessOrFail(`applicationDownloadFormButtonLoaderAction`);
+    }
+    console.log("response : ", response);
+    if (response) downloadAll(response);
+  } catch (e) {
+    stopGeneralLoaderOnSuccessOrFail(`applicationDownloadFormButtonLoaderAction`);
     displayErrors(e);
   }
   return false;

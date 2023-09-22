@@ -25,6 +25,13 @@ const ApplicationApiServices = {
       responseType: 'blob',
       timeout: 60000,
     }),
+  downloadApplicationForm: () =>
+    ApiService.request({
+      url: `${APPLICATION_URLS.DOWNLOAD_APPLICATION_FORM}`,
+      method: 'GET',
+      responseType: 'blob',
+      timeout: 60000,
+    }),
   downloadDocument: params =>
     ApiService.request({
       url: `${APPLICATION_URLS.VIEW_APPLICATION.DOWNLOAD_DOCUMENTS_URL}`,
