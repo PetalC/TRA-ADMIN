@@ -399,8 +399,8 @@ const ApplicationDocumentsAccordion = props => {
             />
             <span>Please upload your documents here</span>
             <div className='d-flex' style={{flexDirection:"column"}}>
-            { selectedApplicationDocuments.fileData?.map((data, index) =>(
-              <div key={index}>
+            { selectedApplicationDocuments.fileData?.map((data) =>(
+              <div>
                 <FileUpload
                   isProfile={false}
                   fileName={data.name}
@@ -411,7 +411,7 @@ const ApplicationDocumentsAccordion = props => {
             <div>
               <FileUpload
                 isProfile={false}
-                fileName={'Browse...'}
+                fileName='Browse...'
                 handleChange={onUploadClick}
               />
               {fileExtensionErrorMessage && (

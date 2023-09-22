@@ -917,11 +917,16 @@ export const viewApplicationUploadDocuments = (dataArr, config, callBack) => {
       startGeneralLoaderOnRequest('viewDocumentUploadDocumentButtonLoaderAction');
 
       const seqPromises = async () => {
-        const resArr = [];
-        for (const data of dataArr) {
-          const response = await ApplicationViewApiServices.applicationModulesApiServices.uploadDocument(data, config);
-          resArr.push(response);          
-        }
+      //   const resArr = [];
+      //   for (const data of dataArr) {
+      //     const response = await ApplicationViewApiServices.applicationModulesApiServices.uploadDocument(data, config);
+      //     resArr.push(response);          
+      //   }
+        
+        const promises = dataArr.map(data =>
+          ApplicationViewApiServices.applicationModulesApiServices.uploadDocument(data, config)
+        );
+        const resArr = await Promise.all(promises);        
         const len = dataArr.length;
         for  (let i = 0; i < len; i+=1) {
           if (resArr[i]?.data?.status === 'SUCCESS') {
