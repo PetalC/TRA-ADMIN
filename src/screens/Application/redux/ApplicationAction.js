@@ -919,14 +919,11 @@ export const viewApplicationUploadDocuments = (dataArr, config, callBack) => {
       const seqPromises = async () => {
         const resArr = [];
         for (const data of dataArr) {
-          console.log('promise is about to call')
           const response = await ApplicationViewApiServices.applicationModulesApiServices.uploadDocument(data, config);
-          resArr.push(response);
-          console.log('Promise resolved');
+          resArr.push(response);          
         }
         const len = dataArr.length;
-
-        for  (let i = 0; i < len; i++) {
+        for  (let i = 0; i < len; i+=1) {
           if (resArr[i]?.data?.status === 'SUCCESS') {
             dispatch({
               type: APPLICATION_REDUX_CONSTANTS.VIEW_APPLICATION.APPLICATION_MODULES
