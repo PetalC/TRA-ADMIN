@@ -7,7 +7,7 @@ import {
   deleteViewApplicationDocumentAction,
   downloadDocuments,
   getApplicationModuleList,
-  viewApplicationUploadDocument,
+  viewApplicationUploadDocuments,
 } from '../../redux/ApplicationAction';
 import AccordionItem from '../../../../common/Accordion/AccordionItem';
 import IconButton from '../../../../common/IconButton/IconButton';
@@ -23,7 +23,7 @@ import { SIDEBAR_NAMES } from '../../../../constants/SidebarConstants';
 
 const initialApplicationDocumentState = {
   description: '',
-  fileData: '',
+  fileData: [],
   isPublic: false,
   documentType: [],
 };
@@ -34,11 +34,12 @@ const APPLICATION_DOCUMENT_REDUCER_ACTIONS = {
 };
 
 function applicationDocumentReducer(state, action) {
-  switch (action.type) {
+    switch (action.type) {
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA:
       return {
         ...state,
-        [`${action.name}`]: action.value,
+        [action.name]: action.name === 'fileData' ? [...state[action.name], action.value] : action.value,
+        // [`${action.name}`]: action.value,
       };
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_DATA:
       return {
@@ -185,7 +186,7 @@ const ApplicationDocumentsAccordion = props => {
         } else {
           setFileData(e.target.files[0]);
           setFileExtensionErrorMessage(false);
-          dispatchSelectedApplicationDocuments({
+                    dispatchSelectedApplicationDocuments({
             type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA,
             name: 'fileData',
             value: e.target.files[0],
@@ -214,24 +215,31 @@ const ApplicationDocumentsAccordion = props => {
     } else if (!selectedApplicationDocuments.description) {
       errorNotification('Description is required');
     } else {
-      const formData = new FormData();
-      formData.append('description', selectedApplicationDocuments.description);
-      formData.append('isPublic', selectedApplicationDocuments.isPublic);
-      formData.append('documentType', selectedApplicationDocuments.documentType.value);
-      formData.append('document', selectedApplicationDocuments.fileData);
-      formData.append('entityId', applicationId);
-      formData.append('documentFor', 'application');
+      console.log(selectedApplicationDocuments.fileData,'==============');
       const config = {
         headers: {
           'content-type': 'multipart/form-data',
         },
       };
-      await dispatch(viewApplicationUploadDocument(formData, config));
-      dispatchSelectedApplicationDocuments({
-        type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.RESET_STATE,
-      });
-      setFileData('');
-      toggleUploadModel();
+      const formDataArr = selectedApplicationDocuments.fileData.map((data,index) => {
+        let formData = new FormData();
+        console.log(formData);
+        formData.append('description', selectedApplicationDocuments.description);
+        formData.append('isPublic', selectedApplicationDocuments.isPublic);
+        formData.append('documentType', selectedApplicationDocuments.documentType.value);
+        formData.append('document', data);
+        formData.append('entityId', applicationId);
+        formData.append('documentFor', 'application');
+        console.log(index,'okok');
+        return formData;
+      })
+      dispatch(viewApplicationUploadDocuments(formDataArr, config, () => {
+        dispatchSelectedApplicationDocuments({
+          type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.RESET_STATE,
+        });
+        setFileData('');
+        toggleUploadModel();
+      }));      
     }
   }, [
     selectedApplicationDocuments,
@@ -311,7 +319,7 @@ const ApplicationDocumentsAccordion = props => {
     },
     [downloadAll]
   );
-
+  
   return (
     <>
       {applicationDocsList !== undefined && (
@@ -399,10 +407,27 @@ const ApplicationDocumentsAccordion = props => {
               isSearchable
             />
             <span>Please upload your documents here</span>
+            <div className='d-flex' style={{flexDirection:"column"}}>
+            { selectedApplicationDocuments.fileData?.map((data, index) =>(
+              <div key={index}>
+                <FileUpload
+                  isProfile={false}
+                  fileName={data.name}
+                  // handleChange={onUploadClick}
+                />
+                {fileExtensionErrorMessage && (
+                  <div className="ui-state-error">
+                    Only jpeg, jpg, png, bmp, gif, tex, xls, xlsx, csv, doc, docx, odt, txt, pdf, png,
+                    pptx, ppt or rtf file types are accepted
+                  </div>
+                )}
+              </div>
+
+            ))}
             <div>
               <FileUpload
                 isProfile={false}
-                fileName={fileData.name ?? 'Browse...'}
+                fileName={'Browse...'}
                 handleChange={onUploadClick}
               />
               {fileExtensionErrorMessage && (
@@ -411,6 +436,7 @@ const ApplicationDocumentsAccordion = props => {
                   pptx, ppt or rtf file types are accepted
                 </div>
               )}
+            </div>
             </div>
             <span>Document Description:</span>
             <Input

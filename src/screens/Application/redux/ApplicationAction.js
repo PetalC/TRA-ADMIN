@@ -910,6 +910,43 @@ export const viewApplicationUploadDocument = (data, config) => {
   };
 };
 
+export const viewApplicationUploadDocuments = (dataArr, config, callBack) => {
+  return async dispatch => {
+    try {
+      console.log(dataArr, config)
+      startGeneralLoaderOnRequest('viewDocumentUploadDocumentButtonLoaderAction');
+
+      const seqPromises = async () => {
+        const resArr = [];
+        for (const data of dataArr) {
+          console.log('promise is about to call')
+          const response = await ApplicationViewApiServices.applicationModulesApiServices.uploadDocument(data, config);
+          resArr.push(response);
+          console.log('Promise resolved');
+        }
+        const len = dataArr.length;
+
+        for  (let i = 0; i < len; i++) {
+          if (resArr[i]?.data?.status === 'SUCCESS') {
+            dispatch({
+              type: APPLICATION_REDUX_CONSTANTS.VIEW_APPLICATION.APPLICATION_MODULES
+                .VIEW_APPLICATION_UPLOAD_DOCUMENT_DATA,
+              data: resArr[i]?.data?.data,
+            });
+            successNotification(resArr[i]?.data?.message || 'Document uploaded successfully.');
+            stopGeneralLoaderOnSuccessOrFail('viewDocumentUploadDocumentButtonLoaderAction');
+          }
+        }
+        callBack();
+      }
+      seqPromises();
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('viewDocumentUploadDocumentButtonLoaderAction');
+      displayErrors(e);
+    }
+  };
+};
+
 export const deleteViewApplicationDocumentAction = async (appDocId, cb) => {
   try {
     startGeneralLoaderOnRequest('viewDocumentDeleteDocumentButtonLoaderAction');
