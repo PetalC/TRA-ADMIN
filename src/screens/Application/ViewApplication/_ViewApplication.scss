@@ -401,12 +401,19 @@
 
 
 .react-select-container.view-application-limit-type-disabled .react-select__control--is-disabled {
-padding: 0;
-
+  padding: 0;
   .react-select__single-value {
-  font: $subtitle $font-regular;
-  color: $primary-color;
+    font: $subtitle $font-regular;
+    color: $primary-color;
+  }
 }
+  
+.react-select-container.view-application-approval-type-disabled .react-select__control--is-disabled {
+  padding: 0;
+    .react-select__single-value {
+    font: $subtitle $font-regular;
+    color: $primary-color;
+  }
 }
 
 .react-select-container .react-select__control .react-select__value-container {

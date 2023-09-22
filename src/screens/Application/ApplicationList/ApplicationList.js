@@ -116,6 +116,10 @@ const ApplicationList = () => {
           : undefined,
       startDate: tempFilter?.startDate || undefined,
       endDate,
+      approvalType:
+        tempFilter?.approvalType?.toString()?.trim()?.length > 0
+          ? tempFilter?.approvalType
+          : undefined,
     };
   }, [tempFilter]);
 
@@ -147,6 +151,13 @@ const ApplicationList = () => {
       value: event,
     });
   }, []);
+  const handleApprovalTypeFilterChange = useCallback(event => {
+    dispatchFilter({
+      type: LIST_FILTER_REDUCER_ACTIONS.UPDATE_DATA,
+      name: 'approvalType',
+      value: event?.value,
+    });
+  });
   const handleClientIdFilterChange = useCallback(event => {
     dispatchFilter({
       type: LIST_FILTER_REDUCER_ACTIONS.UPDATE_DATA,
@@ -457,6 +468,13 @@ const ApplicationList = () => {
     return foundValue ?? [];
   }, [tempFilter?.status, dropdownData]);
 
+  const approvalTypeSelectedValue = useMemo(() => {
+    const foundValue = dropdownData?.approvalType?.find(e => {
+      return (e?.value ?? '') === tempFilter?.approvalType;
+    });
+    return foundValue ? [foundValue] : [];
+  }, [tempFilter?.approvalType, dropdownData]);
+
   // eslint-disable-next-line no-shadow
   const viewApplicationOnSelectRecord = useCallback((id, data) => {
     if (data?.status === 'Draft') {
@@ -750,6 +768,18 @@ const ApplicationList = () => {
                   />
                   <span className="material-icons-round">event</span>
                 </div>
+              </div>
+              <div className="filter-modal-row">
+                <div className="form-title">Approval Type</div>
+                <Select
+                  className="filter-select"
+                  placeholder="Select Approval Type"
+                  name="role"
+                  options={dropdownData?.approvalType}
+                  value={approvalTypeSelectedValue}
+                  onChange={handleApprovalTypeFilterChange}
+                  isSearchble
+                />
               </div>
             </Modal>
           )}
