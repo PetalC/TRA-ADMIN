@@ -25,16 +25,21 @@ import { useModulePrivileges } from '../../../hooks/userPrivileges/useModulePriv
 import { SIDEBAR_NAMES } from '../../../constants/SidebarConstants';
 
 const documentForOptions = [
-  { label: 'Application Risk', value: 'application_risk', name: 'documentFor' },
-  { label: 'Application Client', value: 'application_client', name: 'documentFor' },
+  { label: 'Application', value: 'application', name: 'documentFor' },
   { label: 'Client', value: 'client', name: 'documentFor' },
   { label: 'Debtor', value: 'debtor', name: 'documentFor' },
 ];
+
+const roleOptions = [
+  { label: 'Both', value: ['risk','client'], name: 'roleOption' },
+  { label: 'Client', value: ['client'], name: 'roleOption' },
+]
 
 const SettingsDocumentTypeTab = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [openAddDocModal, setOpenAddModal] = useState(false);
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
   const hasSettingsUpdateRight = useModulePrivileges(SIDEBAR_NAMES.SETTINGS).hasWriteAccess;
   const hasDocumentUpdateRight = useModulePrivileges('document').hasWriteAccess;
 
@@ -74,11 +79,11 @@ const SettingsDocumentTypeTab = () => {
     () => documentTypeListData ?? {},
     [documentTypeListData]
   );
-  const { documentTitle, documentFor } = useMemo(
+  const { documentTitle, documentFor, roleOption } = useMemo(
     () => documentTypeAddData ?? {},
     [documentTypeAddData]
   );
-
+  
   const [docId, setDocId] = useState(null);
 
   const getSettingDocumentTypeListByFilter = useCallback(
@@ -116,17 +121,31 @@ const SettingsDocumentTypeTab = () => {
 
   const handleDocumentTypeChange = useCallback(
     e => {
+      console.log(e.target.value)
       updateDocumentFields('documentTitle', e?.target?.value ?? '');
     },
     [updateDocumentFields]
   );
-
+  
   const handleDocumentForChange = useCallback(
     data => {
+      if(data?.value === 'application') {
+        setShowRoleSelection(true)
+      } else {
+        setShowRoleSelection(false);     
+        updateDocumentFields('roleOption', null);  
+      }      
       updateDocumentFields(data?.name ?? '', data);
     },
     [updateDocumentFields]
   );
+
+  const handleRoleChange = useCallback(
+    data => {
+      updateDocumentFields(data?.name ?? '', data);
+    },
+    [updateDocumentFields]
+  )
 
   const callBackOnAdd = useCallback(() => {
     if (openEditDocModal) {
@@ -175,7 +194,31 @@ const SettingsDocumentTypeTab = () => {
         /**/
       }
     }
-  }, [documentFor, documentTitle, callBackOnAdd]);
+    if (documentFor?.value === 'application' && (!roleOption || !roleOption?.value)) {
+      errorNotification('Enter RoleOption');
+    } else {
+      try {
+        if (openEditDocModal) {
+          dispatch(
+            updateSettingDocType(
+              docId,
+              { documentTitle,documentFor, roleFor: roleOption?.value ?? '' },
+              () => callBackOnAdd()
+            )
+          );
+        } else {
+          dispatch(
+            addNewSettingDocType({ documentTitle, documentFor, roleFor: roleOption?.value ?? '' }, () =>
+              callBackOnAdd()
+            )
+          );
+        }
+      } catch {
+        /**/
+      }
+    }
+  }, [documentFor, roleOption, documentTitle, callBackOnAdd]);
+  
 
   const closeAddDocumentType = () => {
     toggleAddDocModal();
@@ -353,6 +396,20 @@ const SettingsDocumentTypeTab = () => {
               value={documentFor}
               onChange={handleDocumentForChange}
             />
+            { showRoleSelection && (
+                <>
+                  <span>Role</span>
+                  <Select
+                    placeholder="Select"
+                    name="Role Option"
+                    searchable={false}
+                    options={roleOptions}
+                    value={roleOption}
+                    onChange={handleRoleChange}
+                  />
+                </>
+              )
+            }
           </div>
         </Modal>
       )}

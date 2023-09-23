@@ -534,8 +534,8 @@ export const getDocumentTypeList = () => {
   return async dispatch => {
     try {
       const params = {
-        listFor: 'application_risk',
-        requestFrom: 'application_risk',
+        listFor: 'application',
+        requestFrom: 'application',
       };
       const response = await ApplicationDocumentStepApiServices.getDocumentTypeListData(params);
       if (response?.data?.status === 'SUCCESS') {
@@ -869,7 +869,7 @@ export const getViewApplicationDocumentTypeList = () => {
   return async dispatch => {
     try {
       const params = {
-        listFor: 'application_risk',
+        listFor: 'application',
       };
       const response =
         await ApplicationViewApiServices.applicationModulesApiServices.getDocumentTypeListData(
