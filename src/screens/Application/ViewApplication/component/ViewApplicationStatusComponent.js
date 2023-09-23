@@ -22,8 +22,31 @@ const APPLICATION_STATUS = {
   WITHDRAWN: 'Withdraw',
   CANCELLED: 'Cancel',
   APPROVED: 'Approve',
-  DECLINED: 'Decline',
+  DECLINED: 'Refuse',
 };
+
+const ApprovalTypeOptions = [
+  {
+    label: 'Agreed in full',
+    value: 'AGREED_IN_FULL',
+    name: 'approvalType',
+  },
+  {
+    label: 'Maintained',
+    value: 'MAINTAINED',
+    name: 'approvalType',
+  },
+  {
+    label: 'Partially Agreed',
+    value: 'PARTIAL_AGREEMENT',
+    name: 'approvalType',
+  },
+  {
+    label: 'Temporary Limit',
+    value: 'TEMPORARY_LIMIT',
+    name: 'approvalType',
+  },
+];
 
 const ViewApplicationStatusComponent = props => {
   const { isApprovedOrDeclined, setIsApprovedOrdDeclineButtonClicked } = props;
@@ -47,6 +70,7 @@ const ViewApplicationStatusComponent = props => {
   const [modifyLimitModal, setModifyLimitModal] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [commentText, setCommentText] = useState('');
+  const [selectedApprovalType, setSelectedApprovalType] = useState('');
 
   const toggleConfirmationModal = useCallback(() => {
     setShowConfirmationModal(!showConfirmModal);
@@ -98,6 +122,8 @@ const ViewApplicationStatusComponent = props => {
       (!commentText || commentText?.toString()?.trim()?.length <= 0)
     ) {
       errorNotification('Please enter comment to continue!');
+    } else if (statusToChange?.value === 'APPROVED' && !selectedApprovalType) {
+      errorNotification('Please enter approval type!');
     } else {
       try {
         const data = {
@@ -105,8 +131,10 @@ const ViewApplicationStatusComponent = props => {
           status: statusToChange?.value,
           comments: commentText,
         };
-        if (statusToChange?.value === 'APPROVED')
+        if (statusToChange?.value === 'APPROVED') {
           data.creditLimit = newCreditLimit?.toString()?.trim();
+          data.approvalType = selectedApprovalType.value;
+        }
         await dispatch(changeApplicationStatus(id, data, statusToChange));
         await dispatch({
           type: APPLICATION_REDUX_CONSTANTS.VIEW_APPLICATION.APPLICATION_COMMENT_CHANGE,
@@ -195,6 +223,25 @@ const ViewApplicationStatusComponent = props => {
     },
     [toggleConfirmationModal, _id, setStatusToChange, statusToChange]
   );
+
+  const handleApplicationApprovalTypeChange = e => {
+    setSelectedApprovalType(e);
+    try {
+      dispatch({
+        type: APPLICATION_REDUX_CONSTANTS.VIEW_APPLICATION.APPLICATION_EDITABLE_ROW_FIELD_CHANGE,
+        fieldName: 'approvalType',
+        value: e?.value,
+      });
+      dispatch({
+        type: APPLICATION_REDUX_CONSTANTS.VIEW_APPLICATION.APPLICATION_EDITABLE_ROW_FIELD_CHANGE,
+        fieldName: 'approvalTypeError',
+        value: undefined,
+      });
+    } catch (err) {
+      /**/
+    }
+  };
+
   const changeStatusButton = useMemo(
     () => [
       { title: 'Close', buttonType: 'primary-1', onClick: () => toggleConfirmationModal() },
@@ -245,7 +292,7 @@ const ViewApplicationStatusComponent = props => {
   const onClickDeclineButton = () => {
     setIsApprovedOrdDeclineButtonClicked(true);
     if (limitType && limitType?.toString()?.trim()?.length > 0) {
-      setStatusToChange({ label: 'Declined', value: 'DECLINED' });
+      setStatusToChange({ label: 'Refused', value: 'DECLINED' });
       toggleConfirmationModal();
     } else {
       dispatch({
@@ -274,7 +321,7 @@ const ViewApplicationStatusComponent = props => {
           <Button
             buttonType="danger"
             className="small-button"
-            title="Decline"
+            title="Refuse"
             onClick={onClickDeclineButton}
           />
         </div>
@@ -381,6 +428,20 @@ const ViewApplicationStatusComponent = props => {
               type="text"
               value={commentText}
               onChange={e => setCommentText(e?.target?.value)}
+            />
+            <span>Approval Type</span>
+            <Select
+              placeholder="Select Approval Type"
+              name="approvalType"
+              className={
+                !isUpdatable ||
+                !isAllowToUpdate ||
+                (isApprovedOrDeclined && 'view-application-approval-type-disabled')
+              }
+              value={selectedApprovalType ?? []}
+              options={ApprovalTypeOptions}
+              isDisabled={!isUpdatable || !isAllowToUpdate || isApprovedOrDeclined}
+              onChange={handleApplicationApprovalTypeChange}
             />
           </div>
         </Modal>
