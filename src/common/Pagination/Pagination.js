@@ -13,22 +13,22 @@ const noPerPage = [
   { label: '100', value: 100 },
 ];
 const Pagination = props => {
-  const { total, limit, pages, page, className, pageActionClick, onSelectLimit } = props;
+  const { total, limit, pages, page, sortOption, className, pageActionClick, onSelectLimit } = props;
 
   const paginationClass = `pagination-container ${className}`;
 
   const [recordLimit, setRecordLimit] = useState([{ label: '15', value: 15 }]);
 
-  const fromRecordCount = useMemo(() => (page - 1) * limit + 1, [page, limit, total]);
+  const fromRecordCount = useMemo(() => (page - 1) * limit + 1, [page, limit, sortOption, total]);
   const toRecordCount = useMemo(
     () => (total < page * limit ? total : page * limit),
-    [page, limit, total]
+    [page, limit, sortOption, total]
   );
 
-  const onNextClick = () => (page < pages ? pageActionClick(page + 1) : null);
-  const onPrevClick = () => (page > 1 ? pageActionClick(page - 1) : null);
-  const onFirstClick = () => (page > 1 ? pageActionClick(1) : null);
-  const onLastClick = () => (page < pages ? pageActionClick(pages) : null);
+  const onNextClick = () => (page < pages ? pageActionClick(page + 1, sortOption) : null);
+  const onPrevClick = () => (page > 1 ? pageActionClick(page - 1, sortOption) : null);
+  const onFirstClick = () => (page > 1 ? pageActionClick(1, sortOption) : null);
+  const onLastClick = () => (page < pages ? pageActionClick(pages, sortOption) : null);
   const onChangeLimit = e => {
     setRecordLimit(e);
     onSelectLimit(e.value);
@@ -42,7 +42,7 @@ const Pagination = props => {
       value = found;
     }
     setRecordLimit([value]);
-  }, [limit]);
+  }, [limit], [sortOption]);
 
   if (total === 0) {
     return null;
@@ -107,6 +107,7 @@ Pagination.propTypes = {
   limit: PropTypes.number,
   pages: PropTypes.number,
   page: PropTypes.number,
+  sortOption: PropTypes.number,
   pageActionClick: PropTypes.func,
   onSelectLimit: PropTypes.func,
 };
@@ -117,6 +118,7 @@ Pagination.defaultProps = {
   limit: 0,
   pages: 0,
   page: 0,
+  sortOption: 0,
   pageActionClick: null,
   onSelectLimit: null,
 };
