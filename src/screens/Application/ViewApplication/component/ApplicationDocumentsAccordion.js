@@ -34,11 +34,12 @@ const APPLICATION_DOCUMENT_REDUCER_ACTIONS = {
 };
 
 function applicationDocumentReducer(state, action) {
-    switch (action.type) {
+  switch (action.type) {
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA:
       return {
         ...state,
-        [action.name]: action.name === 'fileData' ? [...state[action.name], action.value] : action.value,
+        [action.name]:
+          action.name === 'fileData' ? [...state[action.name], action.value] : action.value,
       };
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_DATA:
       return {
@@ -183,7 +184,7 @@ const ApplicationDocumentsAccordion = props => {
           errorNotification('File size should be less than 10MB.');
         } else {
           setFileExtensionErrorMessage(false);
-                    dispatchSelectedApplicationDocuments({
+          dispatchSelectedApplicationDocuments({
             type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA,
             name: 'fileData',
             value: e.target.files[0],
@@ -216,7 +217,7 @@ const ApplicationDocumentsAccordion = props => {
           'content-type': 'multipart/form-data',
         },
       };
-      const formDataArr = selectedApplicationDocuments.fileData.map((data) => {
+      const formDataArr = selectedApplicationDocuments.fileData.map(data => {
         const formData = new FormData();
         formData.append('description', selectedApplicationDocuments.description);
         formData.append('isPublic', selectedApplicationDocuments.isPublic);
@@ -225,19 +226,21 @@ const ApplicationDocumentsAccordion = props => {
         formData.append('entityId', applicationId);
         formData.append('documentFor', 'application');
         return formData;
-      })
-      dispatch(viewApplicationUploadDocuments(formDataArr, config, () => {
-        dispatchSelectedApplicationDocuments({
-          type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.RESET_STATE,
-        });
-        toggleUploadModel();
-      }));      
+      });
+      dispatch(
+        viewApplicationUploadDocuments(formDataArr, config, () => {
+          dispatchSelectedApplicationDocuments({
+            type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.RESET_STATE,
+          });
+          toggleUploadModel();
+        })
+      );
     }
   }, [
     selectedApplicationDocuments,
     dispatchSelectedApplicationDocuments,
     toggleUploadModel,
-    applicationId,    
+    applicationId,
   ]);
 
   const uploadDocumentButton = useMemo(
@@ -310,7 +313,7 @@ const ApplicationDocumentsAccordion = props => {
     },
     [downloadAll]
   );
-  
+
   return (
     <>
       {applicationDocsList !== undefined && (
@@ -398,29 +401,21 @@ const ApplicationDocumentsAccordion = props => {
               isSearchable
             />
             <span>Please upload your documents here</span>
-            <div className='d-flex' style={{flexDirection:"column"}}>
-            { selectedApplicationDocuments.fileData?.map((data) =>(
-              <div>
-                <FileUpload
-                  isProfile={false}
-                  fileName={data.name}
-                />
-              </div>
-
-            ))}
-            <div>
-              <FileUpload
-                isProfile={false}
-                fileName='Browse...'
-                handleChange={onUploadClick}
-              />
-              {fileExtensionErrorMessage && (
-                <div className="ui-state-error">
-                  Only jpeg, jpg, png, bmp, gif, tex, xls, xlsx, csv, doc, docx, odt, txt, pdf, png,
-                  pptx, ppt or rtf file types are accepted
+            <div className="d-flex" style={{ flexDirection: 'column' }}>
+              {selectedApplicationDocuments.fileData?.map(data => (
+                <div>
+                  <FileUpload isProfile={false} fileName={data.name} />
                 </div>
-              )}
-            </div>
+              ))}
+              <div>
+                <FileUpload isProfile={false} fileName="Browse..." handleChange={onUploadClick} />
+                {fileExtensionErrorMessage && (
+                  <div className="ui-state-error">
+                    Only jpeg, jpg, png, bmp, gif, tex, xls, xlsx, csv, doc, docx, odt, txt, pdf,
+                    png, pptx, ppt or rtf file types are accepted
+                  </div>
+                )}
+              </div>
             </div>
             <span>Document Description:</span>
             <Input
