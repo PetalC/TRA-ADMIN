@@ -34,7 +34,6 @@ const APPLICATION_DOCUMENT_REDUCER_ACTIONS = {
 };
 
 function applicationDocumentReducer(state, action) {
-  console.log('AAAA', state, action);
   switch (action.type) {
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA:
       let value;
