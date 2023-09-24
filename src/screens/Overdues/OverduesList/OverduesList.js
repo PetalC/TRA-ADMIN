@@ -56,6 +56,7 @@ const OverduesList = () => {
   const {
     page: paramPage,
     limit: paramLimit,
+    sortOption: paramsortOption,
     minOutstandingAmount: paramMinOutstandingAmount,
     maxOutstandingAmount: paramMaxOutstandingAmount,
     startDate: paramStartDate,
@@ -136,7 +137,7 @@ const OverduesList = () => {
 
   // listing
   const overdueListWithPageData = useSelector(({ overdue }) => overdue?.overdueList ?? {});
-  const { total, pages, page, limit, docs, headers } = useMemo(
+  const { total, pages, page, limit, sortOption, docs, headers } = useMemo(
     () => overdueListWithPageData,
     [overdueListWithPageData]
   );
@@ -154,6 +155,7 @@ const OverduesList = () => {
         const data = {
           page: page ?? 1,
           limit: limit ?? 15,
+          sortOption: sortOption ?? 0,
           clientId:
             (tempFilter?.clientId?.value?.trim()?.length ?? -1) > 0
               ? tempFilter?.clientId
@@ -187,7 +189,7 @@ const OverduesList = () => {
         }
       }
     },
-    [page, limit, { ...tempFilter }]
+    [page, limit, sortOption, { ...tempFilter }]
   );
 
   const [filterModal, setFilterModal] = useState(false);
@@ -197,8 +199,8 @@ const OverduesList = () => {
   );
   const onClickApplyFilter = useCallback(async () => {
     toggleFilterModal();
-    await getOverdueListByFilter({ page: 1, limit: 15 });
-  }, [getOverdueListByFilter, toggleFilterModal, page, limit]);
+    await getOverdueListByFilter({ page: 1, limit: 15, sortOption: 0 });
+  }, [getOverdueListByFilter, toggleFilterModal, page, limit, sortOption]);
 
   const onClickResetFilter = useCallback(async () => {
     dispatchFilter({
@@ -287,6 +289,7 @@ const OverduesList = () => {
     const params = {
       page: paramPage ?? page ?? 1,
       limit: paramLimit ?? limit ?? 15,
+      sortOption: paramsortOption ?? sortOption ?? 0,
     };
     const filters = {
       clientId: overdueListFilters?.clientId,
@@ -318,13 +321,14 @@ const OverduesList = () => {
   }, [finalFilter]);
 
   useEffect(() => {
-    dispatch(resetOverdueListData(page, pages, total, limit));
+    dispatch(resetOverdueListData(page, pages, total, limit, sortOption));
   }, []);
 
   useUrlParamsUpdate(
     {
       page: page ?? 1,
       limit: limit ?? 15,
+      sortOption: sortOption ?? 0,
       clientId: finalFilter?.clientId?.value ?? undefined,
       debtorId:
         (finalFilter?.debtorId?.value?.trim()?.length ?? -1) > 0
@@ -341,18 +345,23 @@ const OverduesList = () => {
       startDate: finalFilter?.startDate ?? undefined,
       endDate: finalFilter?.endDate ?? undefined,
     },
-    [total, pages, page, limit, { ...finalFilter }]
+    [total, pages, page, limit, sortOption, { ...finalFilter }]
   );
 
   const pageActionClick = useCallback(
-    async newPage => {
-      await getOverdueListByFilter({ page: newPage, limit });
+    async (newPage, sort) => {
+      await getOverdueListByFilter({ page: newPage, limit, sortOption: sort });
     },
-    [getOverdueListByFilter, limit]
+    [getOverdueListByFilter, limit, sortOption]
   );
+
+  const sortActionClick = sortvalue => {
+    pageActionClick(page, sortvalue);
+  };
+
   const onSelectLimit = useCallback(
     async newLimit => {
-      await getOverdueListByFilter({ page: 1, limit: newLimit });
+      await getOverdueListByFilter({ page: 1, limit: newLimit, sortOption: 0 });
     },
     [getOverdueListByFilter]
   );
@@ -460,6 +469,8 @@ const OverduesList = () => {
                   headers={headers}
                   refreshData={getOverdueListByFilter}
                   rowClass="cursor-pointer"
+                  sortOption={sortOption}
+                  sortActionClick={sortActionClick}
                 />
               </div>
               <Pagination
@@ -468,6 +479,7 @@ const OverduesList = () => {
                 pages={pages}
                 page={page}
                 limit={limit}
+                sortOption={sortOption}
                 pageActionClick={pageActionClick}
                 onSelectLimit={onSelectLimit}
               />
