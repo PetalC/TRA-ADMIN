@@ -37,7 +37,6 @@ const OverduesList = () => {
     startDate: null,
     endDate: null,
   });
-  const [sortOpt, setsortOpt] = useState(0);
   const isOverdueUpdatable = useModulePrivileges(SIDEBAR_NAMES.OVERDUE).hasWriteAccess;
   const [filter, dispatchFilter] = useReducer(filterReducer, {
     tempFilter: {},
@@ -156,7 +155,7 @@ const OverduesList = () => {
         const data = {
           page: page ?? 1,
           limit: limit ?? 15,
-          sortOption: sortOption ?? sortOpt,
+          sortOption: sortOption ?? 0,
           clientId:
             (tempFilter?.clientId?.value?.trim()?.length ?? -1) > 0
               ? tempFilter?.clientId
@@ -348,22 +347,21 @@ const OverduesList = () => {
     },
     [total, pages, page, limit, sortOption, { ...finalFilter }]
   );
-    
+
   const pageActionClick = useCallback(
-    async ( newPage, sort ) => {
+    async (newPage, sort) => {
       await getOverdueListByFilter({ page: newPage, limit, sortOption: sort });
     },
     [getOverdueListByFilter, limit, sortOption]
   );
 
-  const sortActionClick = (sortvalue) =>{
-    setsortOpt(sortvalue);
+  const sortActionClick = sortvalue => {
     pageActionClick(page, sortvalue);
-  }
+  };
 
   const onSelectLimit = useCallback(
     async newLimit => {
-      await getOverdueListByFilter({ page: 1, limit: newLimit, sortOption:0 });
+      await getOverdueListByFilter({ page: 1, limit: newLimit, sortOption: 0 });
     },
     [getOverdueListByFilter]
   );
@@ -471,7 +469,7 @@ const OverduesList = () => {
                   headers={headers}
                   refreshData={getOverdueListByFilter}
                   rowClass="cursor-pointer"
-                  sortOption={sortOpt}
+                  sortOption={sortOption}
                   sortActionClick={sortActionClick}
                 />
               </div>
