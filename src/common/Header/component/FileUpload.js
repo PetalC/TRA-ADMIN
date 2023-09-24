@@ -6,13 +6,14 @@ import dummy from '../../../assets/images/dummy.svg';
 
 const FileUpload = props => {
   const {
+    id,
     isProfile,
-    handleChange,
     profilePictureUrl,
     fileName,
     className,
     file,
     isDeleteIcon,
+    handleChange,
     onDeleteClick,
   } = props;
 
@@ -46,7 +47,7 @@ const FileUpload = props => {
         type="file"
         style={{ display: 'none' }}
         ref={hiddenFileInput}
-        onChange={handleChange}
+        onChange={(e) => handleChange(e, id)}
       />
       <p onClick={handleClick}>{fileName}</p>
     </div>
@@ -61,6 +62,7 @@ FileUpload.propTypes = {
   file: PropTypes.object.isRequired,
   isDeleteIcon: PropTypes.bool,
   onDeleteClick: PropTypes.func,
+  key: PropTypes.number,
 };
 
 FileUpload.defaultProps = {

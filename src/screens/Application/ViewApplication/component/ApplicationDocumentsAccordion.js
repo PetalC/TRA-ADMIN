@@ -34,13 +34,30 @@ const APPLICATION_DOCUMENT_REDUCER_ACTIONS = {
 };
 
 function applicationDocumentReducer(state, action) {
+  console.log('AAAA', state, action);
   switch (action.type) {
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA:
+      let value;
+      if (action.name === 'fileData') {
+        const arr = [ ...state[action.name] ];
+
+        if (action.id == undefined || action.id == null) {
+          arr.push(action.value);
+        }
+        else {
+          arr[action.id] = action.value;
+        }
+        
+        value = arr;
+      }
+      else {
+        value = action.value;
+      }
+
       return {
         ...state,
-        [action.name]:
-          action.name === 'fileData' ? [...state[action.name], action.value] : action.value,
-      };
+        [action.name]: value
+      }
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_DATA:
       return {
         ...state,
@@ -132,7 +149,7 @@ const ApplicationDocumentsAccordion = props => {
     [dispatchSelectedApplicationDocuments]
   );
   const onUploadClick = useCallback(
-    e => {
+    (e, id) => {
       // e.persist();
       if (e.target.files && e.target.files.length > 0) {
         const fileExtension = [
@@ -188,6 +205,7 @@ const ApplicationDocumentsAccordion = props => {
             type: APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA,
             name: 'fileData',
             value: e.target.files[0],
+            id,
           });
         }
       }
@@ -402,10 +420,16 @@ const ApplicationDocumentsAccordion = props => {
             />
             <span>Please upload your documents here</span>
             <div className="d-flex" style={{ flexDirection: 'column' }}>
-              {selectedApplicationDocuments.fileData?.map(data => (
-                <div>
-                  <FileUpload isProfile={false} fileName={data.name} />
-                </div>
+              {selectedApplicationDocuments.fileData?.map((data, ind) => (
+                <>
+                  <FileUpload 
+                    key={`fileupload-${ind}`} 
+                    id={ind}
+                    isProfile={false} 
+                    fileName={data.name} 
+                    handleChange={onUploadClick} 
+                    />
+                </>
               ))}
               <div>
                 <FileUpload isProfile={false} fileName="Browse..." handleChange={onUploadClick} />
