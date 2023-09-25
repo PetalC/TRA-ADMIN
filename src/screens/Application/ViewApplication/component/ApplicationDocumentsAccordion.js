@@ -34,29 +34,30 @@ const APPLICATION_DOCUMENT_REDUCER_ACTIONS = {
 };
 
 function applicationDocumentReducer(state, action) {
+  let stateUpdated;
   switch (action.type) {
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_SINGLE_DATA:
-      let value;
       if (action.name === 'fileData') {
-        const arr = [ ...state[action.name] ];
+        const arr = [...state[action.name]];
 
-        if (action.id == undefined || action.id == null) {
+        if (action.id === undefined || action.id === null) {
           arr.push(action.value);
-        }
-        else {
+        } else {
           arr[action.id] = action.value;
         }
-        
-        value = arr;
-      }
-      else {
-        value = action.value;
+
+        stateUpdated = {
+          ...state,
+          [action.name]: arr,
+        };
+      } else {
+        stateUpdated = {
+          ...state,
+          [action.name]: action.value,
+        };
       }
 
-      return {
-        ...state,
-        [action.name]: value
-      }
+      return stateUpdated;
     case APPLICATION_DOCUMENT_REDUCER_ACTIONS.UPDATE_DATA:
       return {
         ...state,
@@ -421,13 +422,12 @@ const ApplicationDocumentsAccordion = props => {
             <div className="d-flex" style={{ flexDirection: 'column' }}>
               {selectedApplicationDocuments.fileData?.map((data, ind) => (
                 <>
-                  <FileUpload 
-                    key={`fileupload-${ind}`} 
+                  <FileUpload
                     id={ind}
-                    isProfile={false} 
-                    fileName={data.name} 
-                    handleChange={onUploadClick} 
-                    />
+                    isProfile={false}
+                    fileName={data.name}
+                    handleChange={onUploadClick}
+                  />
                 </>
               ))}
               <div>
