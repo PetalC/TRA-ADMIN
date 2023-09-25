@@ -31,9 +31,9 @@ const documentForOptions = [
 ];
 
 const roleOptions = [
-  { label: 'Both', value: ['risk','client'], name: 'roleOption' },
+  { label: 'Both', value: ['risk', 'client'], name: 'roleOption' },
   { label: 'Client', value: ['client'], name: 'roleOption' },
-]
+];
 
 const SettingsDocumentTypeTab = () => {
   const dispatch = useDispatch();
@@ -83,7 +83,7 @@ const SettingsDocumentTypeTab = () => {
     () => documentTypeAddData ?? {},
     [documentTypeAddData]
   );
-  
+
   const [docId, setDocId] = useState(null);
 
   const getSettingDocumentTypeListByFilter = useCallback(
@@ -121,20 +121,19 @@ const SettingsDocumentTypeTab = () => {
 
   const handleDocumentTypeChange = useCallback(
     e => {
-      console.log(e.target.value)
       updateDocumentFields('documentTitle', e?.target?.value ?? '');
     },
     [updateDocumentFields]
   );
-  
+
   const handleDocumentForChange = useCallback(
     data => {
-      if(data?.value === 'application') {
-        setShowRoleSelection(true)
+      if (data?.value === 'application') {
+        setShowRoleSelection(true);
       } else {
-        setShowRoleSelection(false);     
-        updateDocumentFields('roleOption', null);  
-      }      
+        setShowRoleSelection(false);
+        updateDocumentFields('roleOption', null);
+      }
       updateDocumentFields(data?.name ?? '', data);
     },
     [updateDocumentFields]
@@ -145,7 +144,7 @@ const SettingsDocumentTypeTab = () => {
       updateDocumentFields(data?.name ?? '', data);
     },
     [updateDocumentFields]
-  )
+  );
 
   const callBackOnAdd = useCallback(() => {
     if (openEditDocModal) {
@@ -202,14 +201,15 @@ const SettingsDocumentTypeTab = () => {
           dispatch(
             updateSettingDocType(
               docId,
-              { documentTitle,documentFor, roleFor: roleOption?.value ?? '' },
+              { documentTitle, documentFor, roleFor: roleOption?.value ?? '' },
               () => callBackOnAdd()
             )
           );
         } else {
           dispatch(
-            addNewSettingDocType({ documentTitle, documentFor, roleFor: roleOption?.value ?? '' }, () =>
-              callBackOnAdd()
+            addNewSettingDocType(
+              { documentTitle, documentFor, roleFor: roleOption?.value ?? '' },
+              () => callBackOnAdd()
             )
           );
         }
@@ -218,7 +218,6 @@ const SettingsDocumentTypeTab = () => {
       }
     }
   }, [documentFor, roleOption, documentTitle, callBackOnAdd]);
-  
 
   const closeAddDocumentType = () => {
     toggleAddDocModal();
@@ -396,20 +395,19 @@ const SettingsDocumentTypeTab = () => {
               value={documentFor}
               onChange={handleDocumentForChange}
             />
-            { showRoleSelection && (
-                <>
-                  <span>Role</span>
-                  <Select
-                    placeholder="Select"
-                    name="Role Option"
-                    searchable={false}
-                    options={roleOptions}
-                    value={roleOption}
-                    onChange={handleRoleChange}
-                  />
-                </>
-              )
-            }
+            {showRoleSelection && (
+              <>
+                <span>Role</span>
+                <Select
+                  placeholder="Select"
+                  name="Role Option"
+                  searchable={false}
+                  options={roleOptions}
+                  value={roleOption}
+                  onChange={handleRoleChange}
+                />
+              </>
+            )}
           </div>
         </Modal>
       )}
