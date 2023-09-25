@@ -31,8 +31,8 @@ const documentForOptions = [
 ];
 
 const roleOptions = [
-  { label: 'Both', value: ['risk', 'client'], name: 'roleOption' },
-  { label: 'Client', value: ['client'], name: 'roleOption' },
+  { label: 'Both', value: ['risk','client'], name: 'roleOption' },
+  { label: 'Risk', value: ['risk'], name: 'roleOption' },
 ];
 
 const SettingsDocumentTypeTab = () => {
