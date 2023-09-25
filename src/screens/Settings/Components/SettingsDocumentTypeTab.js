@@ -83,6 +83,15 @@ const SettingsDocumentTypeTab = () => {
     () => documentTypeAddData ?? {},
     [documentTypeAddData]
   );
+
+  useEffect(() => {
+    if(documentFor?.value === 'application'){
+      setShowRoleSelection(true);
+    } else {
+      setShowRoleSelection(false);
+    }
+
+  }, [documentFor])
   
   const [docId, setDocId] = useState(null);
 
@@ -121,7 +130,6 @@ const SettingsDocumentTypeTab = () => {
 
   const handleDocumentTypeChange = useCallback(
     e => {
-      console.log(e.target.value)
       updateDocumentFields('documentTitle', e?.target?.value ?? '');
     },
     [updateDocumentFields]
