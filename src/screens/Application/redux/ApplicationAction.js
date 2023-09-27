@@ -1223,7 +1223,6 @@ export const applicationFormDownloadAction = async () => {
     if (response?.statusText === 'OK') {
       stopGeneralLoaderOnSuccessOrFail(`applicationDownloadFormButtonLoaderAction`);
     }
-    console.log("response : ", response);
     if (response) downloadAll(response);
   } catch (e) {
     stopGeneralLoaderOnSuccessOrFail(`applicationDownloadFormButtonLoaderAction`);
