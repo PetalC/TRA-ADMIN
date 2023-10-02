@@ -73,6 +73,8 @@ const Table = props => {
     isEditableDrawer,
     handleRedirectClick,
     deleteApplication,
+    sortOption,
+    sortActionClick,
   } = props;
   const tableClassName = `table-class ${tableClass}`;
   const [drawerState, dispatchDrawerState] = useReducer(drawerReducer, drawerInitialState);
@@ -213,6 +215,20 @@ const Table = props => {
     [setSelectedRowData, selectedRowData]
   );
 
+  const onSortDataChange = headlb => {
+    if (headlb === 'Client Name') {
+      if (sortOption !== 0) sortActionClick(0);
+      else if (sortOption === 0) sortActionClick(1);
+    } else if (headlb === 'Month') {
+      if (sortOption !== 2) sortActionClick(2);
+      else if (sortOption === 2) sortActionClick(3);
+    }
+  };
+
+  const onSortFlagUpdate = () => {
+    return sortOption === 0 || sortOption === 2;
+  };
+
   const onSelectAllRow = useCallback(() => {
     if (tableData.length !== 0) {
       if (selectedRowData.length === tableData.length) {
@@ -266,8 +282,31 @@ const Table = props => {
                 className={`${headerClass} ${
                   heading.type === 'boolean' ? 'table-checkbox-header' : ''
                 }  `}
+                onClick={
+                  heading.label === 'Client Name' || heading.label === 'Month'
+                    ? () => onSortDataChange(heading.label)
+                    : null
+                }
               >
                 {heading.label}
+                {tableClassName === 'table-class main-list-table' &&
+                heading.label === 'Month' &&
+                sortOption > 1 ? (
+                  <span className="material-icons-round">
+                    {`${onSortFlagUpdate() ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}`}
+                  </span>
+                ) : (
+                  ''
+                )}
+                {tableClassName === 'table-class main-list-table' &&
+                heading.label === 'Client Name' &&
+                sortOption < 2 ? (
+                  <span className="material-icons-round">
+                    {`${onSortFlagUpdate() ? 'keyboard_arrow_down' : 'keyboard_arrow_up'}`}
+                  </span>
+                ) : (
+                  ''
+                )}
               </th>
             ))}
           {(haveActions || extraColumns.length > 0 || stepperColumn.length > 0) && isUpdatable && (
@@ -331,6 +370,8 @@ Table.propTypes = {
   isEditableDrawer: PropTypes.bool,
   handleRedirectClick: PropTypes.func,
   deleteApplication: PropTypes.func,
+  sortOption: PropTypes.number,
+  sortActionClick: PropTypes.func,
 };
 
 Table.defaultProps = {
@@ -355,6 +396,8 @@ Table.defaultProps = {
   isEditableDrawer: false,
   handleRedirectClick: () => {},
   deleteApplication: () => {},
+  sortOption: 0,
+  sortActionClick: null,
 };
 
 export default Table;

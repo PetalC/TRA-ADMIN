@@ -181,7 +181,7 @@ export const saveOverdueList = data => {
   };
 };
 
-export const resetOverdueListData = (page, pages, total, limit) => {
+export const resetOverdueListData = (page, pages, total, limit, sortOption) => {
   return dispatch => {
     dispatch({
       type: OVERDUE_REDUX_CONSTANTS.RESET_OVERDUE_LIST_PAGINATION_DATA,
@@ -189,6 +189,7 @@ export const resetOverdueListData = (page, pages, total, limit) => {
       pages,
       total,
       limit,
+      sortOption,
     });
   };
 };
