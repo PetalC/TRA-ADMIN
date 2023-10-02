@@ -58,7 +58,7 @@ const ApplicationStakeholderAccordion = props => {
                   <div className="d-flex">
                     <div className="font-field">Date Of Birth:</div>
                     <div className="font-primary ml-10">
-                    <span className="font-primary ml-10">{i?.dateOfBirth ?? '-'}</span>
+                    <span className="font-primary ml-10">{(i?.dateOfBirth).split('T')[0] ?? '-'}</span>
                     </div>
                   </div>
                   <div className="d-flex">
