@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import AccordionItem from '../../../../common/Accordion/AccordionItem';
 
 const ApplicationStakeholderAccordion = props => {
@@ -58,7 +59,7 @@ const ApplicationStakeholderAccordion = props => {
                   <div className="d-flex">
                     <div className="font-field">Date Of Birth:</div>
                     <div className="font-primary ml-10">
-                    <span className="font-primary ml-10">{(i?.dateOfBirth).split('T')[0] ?? '-'}</span>
+                    <span className="font-primary ml-10">{moment(i?.dateOfBirth).format('DD-MM-YYYY') ?? '-'}</span>
                     </div>
                   </div>
                   <div className="d-flex">
