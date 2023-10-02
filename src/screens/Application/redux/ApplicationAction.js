@@ -911,6 +911,38 @@ export const viewApplicationUploadDocument = (data, config) => {
   };
 };
 
+export const viewApplicationUploadDocuments = (dataArr, config, callBack) => {
+  return async dispatch => {
+    try {
+      startGeneralLoaderOnRequest('viewDocumentUploadDocumentButtonLoaderAction');
+
+      const seqPromises = async () => {
+        const promises = dataArr.map(data =>
+          ApplicationViewApiServices.applicationModulesApiServices.uploadDocument(data, config)
+        );
+        const resArr = await Promise.all(promises);
+        const len = dataArr.length;
+        for (let i = 0; i < len; i += 1) {
+          if (resArr[i]?.data?.status === 'SUCCESS') {
+            dispatch({
+              type: APPLICATION_REDUX_CONSTANTS.VIEW_APPLICATION.APPLICATION_MODULES
+                .VIEW_APPLICATION_UPLOAD_DOCUMENT_DATA,
+              data: resArr[i]?.data?.data,
+            });
+            successNotification(resArr[i]?.data?.message || 'Document uploaded successfully.');
+            stopGeneralLoaderOnSuccessOrFail('viewDocumentUploadDocumentButtonLoaderAction');
+          }
+        }
+        callBack();
+      };
+      seqPromises();
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('viewDocumentUploadDocumentButtonLoaderAction');
+      displayErrors(e);
+    }
+  };
+};
+
 export const deleteViewApplicationDocumentAction = async (appDocId, cb) => {
   try {
     startGeneralLoaderOnRequest('viewDocumentDeleteDocumentButtonLoaderAction');
