@@ -19,7 +19,10 @@ import {
   getViewApplicationDocumentTypeList,
   resetApplicationDetail,
 } from '../redux/ApplicationAction';
-import { getDebtorCreditLimitData } from '../../Debtors/redux/DebtorsAction';
+import {
+  getDebtorCreditLimitData,
+  getDebtorStakeHolderListData,
+} from '../../Debtors/redux/DebtorsAction';
 import TableApiService from '../../../common/Table/TableApiService';
 import Drawer from '../../../common/Drawer/Drawer';
 import ApplicationReportAccordion from './component/ApplicationReportAccordion';
@@ -39,6 +42,7 @@ import ApplicationActiveCreditLimitsAccordion from './component/ApplicationActiv
 import { useModulePrivileges } from '../../../hooks/userPrivileges/useModulePrivilegesHook';
 import { SIDEBAR_NAMES } from '../../../constants/SidebarConstants';
 import { APPLICATION_REDUX_CONSTANTS } from '../redux/ApplicationReduxConstants';
+import ApplicationStakeholderAccordion from './component/ApplicationStakeholderAccordion';
 
 export const DRAWER_ACTIONS = {
   SHOW_DRAWER: 'SHOW_DRAWER',
@@ -178,6 +182,7 @@ const ViewApplication = () => {
     if (debtorId?.length > 0) {
       dispatch(getApplicationAlertsListData(debtorId?.[0]?._id));
       dispatch(getDebtorCreditLimitData(debtorId?.[0]?._id));
+      dispatch(getDebtorStakeHolderListData(debtorId?.[0]?._id));
     }
   }, [debtorId]);
 
@@ -451,6 +456,7 @@ const ViewApplication = () => {
                         debtorId={debtorId?.[0]?._id}
                         index={8}
                       />
+                      <ApplicationStakeholderAccordion debtorId={debtorId?.[0]?._id} index={9} />
                     </Accordion>
                   </div>
                 </div>

@@ -24,26 +24,28 @@ const ApplicationActiveClientLimitAccordion = props => {
           suffix="expand_more"
         >
           {data &&
-            data.map(i => (
-              <div className="common-accordion-item-content-box" key={i._id}>
+            data.map(creditLimit => (
+              <div className="common-accordion-item-content-box" key={creditLimit._id}>
                 <div className="d-flex">
                   <span className="font-field">Client Name:</span>
-                  <span className="font-primary ml-10">{i?.name.value ?? '-'}</span>
+                  <span className="font-primary ml-10">{creditLimit?.name.value || '-'}</span>
                 </div>
                 <div className="d-flex">
                   <span className="font-field">Limit Type:</span>
-                  <span className="font-primary ml-10">{i?.limitType ?? '-'}</span>
+                  <span className="font-primary ml-10">{creditLimit?.limitType || '-'}</span>
                 </div>
                 <div className="d-flex">
                   <div className="font-field">Approve Amount:</div>
                   <div className="font-primary ml-10">
-                    {i?.creditLimit ? `$${NumberCommaSeparator(i.creditLimit)}` : '-'}
+                    {creditLimit?.creditLimit
+                      ? `$${NumberCommaSeparator(creditLimit.creditLimit)}`
+                      : '-'}
                   </div>
                 </div>
                 <div className="d-flex">
                   <div className="font-field">Approval Date:</div>
                   <div className="font-primary ml-10">
-                    {moment(i?.approvalOrDecliningDate).format('DD-MMM-YYYY')}
+                    {moment(creditLimit?.approvalOrDecliningDate).format('DD-MMM-YYYY')}
                   </div>
                 </div>
               </div>
