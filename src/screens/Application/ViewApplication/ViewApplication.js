@@ -19,7 +19,10 @@ import {
   getViewApplicationDocumentTypeList,
   resetApplicationDetail,
 } from '../redux/ApplicationAction';
-import { getDebtorCreditLimitData, getDebtorStakeHolderListData } from '../../Debtors/redux/DebtorsAction';
+import {
+  getDebtorCreditLimitData,
+  getDebtorStakeHolderListData,
+} from '../../Debtors/redux/DebtorsAction';
 import TableApiService from '../../../common/Table/TableApiService';
 import Drawer from '../../../common/Drawer/Drawer';
 import ApplicationReportAccordion from './component/ApplicationReportAccordion';
@@ -453,10 +456,7 @@ const ViewApplication = () => {
                         debtorId={debtorId?.[0]?._id}
                         index={8}
                       />
-                      <ApplicationStakeholderAccordion
-                        debtorId={debtorId?.[0]?._id}
-                        index={9}
-                      />
+                      <ApplicationStakeholderAccordion debtorId={debtorId?.[0]?._id} index={9} />
                     </Accordion>
                   </div>
                 </div>
