@@ -2,7 +2,7 @@ import moment from 'moment';
 import { NumberCommaSeparator } from './NumberCommaSeparator';
 
 export const ALERT_TYPE_ROW = {
-  Moderate: 'red-tag',
+  Moderate: 'secondary-tag',
   High: 'secondary-tag',
   Low: 'alert-blue-tag',
 };
