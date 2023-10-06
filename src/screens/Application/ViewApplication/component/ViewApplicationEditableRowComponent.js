@@ -12,12 +12,7 @@ import { APPLICATION_REDUX_CONSTANTS } from '../../redux/ApplicationReduxConstan
 
 const LimitTypeOptions = [
   {
-    label: 'Endorsed Limit',
-    value: 'ENDORSED',
-    name: 'limitType',
-  },
-  {
-    label: 'Credit Check',
+    label: 'Credit Checks',
     value: 'CREDIT_CHECK',
     name: 'limitType',
   },
@@ -27,13 +22,13 @@ const LimitTypeOptions = [
     name: 'limitType',
   },
   {
-    label: 'Health Check',
-    value: 'HEALTH_CHECK',
+    label: 'Endorsed Limits',
+    value: 'ENDORSED',
     name: 'limitType',
   },
   {
-    label: '24/7 Alerts',
-    value: '247_ALERT',
+    label: 'Health Checks',
+    value: 'HEALTH_CHECK',
     name: 'limitType',
   },
 ];
