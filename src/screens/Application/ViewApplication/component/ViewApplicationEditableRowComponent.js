@@ -31,6 +31,11 @@ const LimitTypeOptions = [
     value: 'HEALTH_CHECK',
     name: 'limitType',
   },
+  {
+    label: '24/7 Alerts',
+    value: '247_ALERT',
+    name: 'limitType',
+  },
 ];
 
 const ViewApplicationEditableRowComponent = props => {
