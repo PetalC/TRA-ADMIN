@@ -8,10 +8,11 @@
   align-items: center;
   width: 100%;
   padding: 0 40px;
-  span {
-    font: $title $font-bold;
-    color: $field-color;
-  }
+
+  // span:not(.material-icons-round) {
+  //   font: $title $font-bold;
+  //   color: $field-color;
+  // }
 }
 
 .add-overdue-modal {
@@ -19,6 +20,7 @@
   height: 80%;
   display: flex;
   flex-direction: column;
+
   .modal-body {
     flex-grow: 1;
     overflow: auto;
@@ -38,7 +40,7 @@
   .add-overdue-field-container {
     display: flex;
 
-    > div,
+    >div,
     input,
     textarea,
     .react-select-container,
@@ -52,6 +54,7 @@
     grid-column: 2;
     grid-row: 7 / span 7;
   }
+
   .add-overdue-textarea.overdue-analyst-comment {
     grid-column: 2;
     grid-row: 10 / span 10;
@@ -71,6 +74,7 @@
 
   .add-overdue-total-amount {
     padding-right: 5px;
+
     .ui-state-error {
       text-align: right;
     }
@@ -96,6 +100,7 @@
 
   thead {
     border: 1px solid #ffffff;
+
     th {
       text-align: left;
     }
@@ -125,8 +130,8 @@
     min-width: 110px;
 
     div {
-    width: 100%;
-    text-align: center;
+      width: 100%;
+      text-align: center;
     }
   }
 }

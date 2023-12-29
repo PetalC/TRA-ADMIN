@@ -1,0 +1,89 @@
+.import-overdue-modal {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+//stepper-progress
+.io-stepper-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.io-stepper-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.io-stepper-item::before {
+  position: absolute;
+  content: '';
+  border-bottom: 2px solid $border-color;
+  width: 100%;
+  top: 10px;
+  left: -50%;
+}
+.io-stepper-item::after {
+  position: absolute;
+  content: '';
+  border-bottom: 2px solid $border-color;
+  //width: 100%;
+  top: 10px;
+  left: 50%;
+}
+.io-stepper-item .io-step-circle {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid $primary-color;
+  background-color: white;
+  z-index: 1;
+}
+.io-step-name {
+  font-size: $field-name;
+  color: $placeholder-color;
+}
+.io-step-name.io-done-step {
+  color: $primary-color;
+}
+.io-stepper-item:first-child::before {
+  content: none;
+}
+.io-stepper-item:last-child::after {
+  content: none;
+}
+.io-stepper-item.io-done-step::before {
+  border-color: $primary-color;
+}
+.io-stepper-item.io-done-step::after {
+  border-color: $primary-color;
+}
+.io-step-circle.io-done-step {
+  background-color: $primary-color;
+}
+//end
+
+.io-step-content {
+  width: 100%;
+  height: 50vh;
+  max-height: 50vh;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: auto;
+}
+.io-step-button-row {
+  width: 100%;
+  margin-top: 10px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: flex-end;
+  bottom: 0;
+}

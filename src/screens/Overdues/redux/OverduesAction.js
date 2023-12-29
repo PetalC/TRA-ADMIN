@@ -8,6 +8,7 @@ import { displayErrors } from '../../../helpers/ErrorNotifyHelper';
 import { DashboardApiService } from '../../Dashboard/services/DashboardApiService';
 import { OverdueApiServices } from '../services/OverdueApiServices';
 import { OVERDUE_REDUX_CONSTANTS } from './OverduesReduxConstants';
+import ImportOverdueApiServices from '../services/ImportOverdueApiServices';
 
 export const getEntityDetails = () => {
   return async dispatch => {
@@ -230,6 +231,153 @@ export const downloadOVerduesForSelectedDateRange = params => {
       return false;
     } finally {
       stopGeneralLoaderOnSuccessOrFail('overdueDownloadButtonLoaderAction');
+    }
+  };
+};
+
+export const getOverduesListByFilter = (params = { page: 1, limit: 15 }) => {
+  return async dispatch => {
+    const finalParams = {
+      ...params,
+      clientId: params?.clientId?.value,
+      debtorId: params?.debtorId?.value,
+    };
+    startGeneralLoaderOnRequest('overdueListPageLoader');
+    try {
+      const response = await OverdueApiServices.getOverdueListByFilter(finalParams);
+
+      if (response?.data?.status === 'SUCCESS') {
+        dispatch({
+          type: OVERDUE_REDUX_CONSTANTS.OVERDUE_LIST_SUCCESS,
+          data: response?.data?.data,
+        });
+        stopGeneralLoaderOnSuccessOrFail('overdueListPageLoader');
+      }
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('overdueListPageLoader');
+      displayErrors(e);
+    }
+  };
+};
+
+export const importOverdueGoToNextStep = () => {
+  return dispatch => {
+    dispatch({
+      type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.GO_TO_NEXT_STEP,
+    });
+  };
+};
+
+export const deleteImportedFile = () => {
+  return dispatch => {
+    dispatch({
+      type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.DELETE_IMPORTED_FILE,
+    });
+  };
+};
+
+export const downloadODSample = async () => {
+  try {
+    startGeneralLoaderOnRequest('downloadODSampleFileLoaderButton');
+    const response = await ImportOverdueApiServices.downloadSample();
+    if (response?.statusText === 'OK') {
+      stopGeneralLoaderOnSuccessOrFail('downloadODSampleFileLoaderButton');
+      return response;
+    }
+  } catch (e) {
+    stopGeneralLoaderOnSuccessOrFail('downloadODSampleFileLoaderButton');
+    displayErrors(e);
+  }
+  return false;
+};
+
+export const deleteDumpFromBackend = dumpId => {
+  return async () => {
+    try {
+      console.log(dumpId);
+      startGeneralLoaderOnRequest('deleteDumpFromBackEndLoader');
+      // await ImportOverdueApiServices.deleteOverdueDump(dumpId);
+      stopGeneralLoaderOnSuccessOrFail('deleteDumpFromBackEndLoader');
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('deleteDumpFromBackEndLoader');
+      displayErrors(e);
+    }
+  };
+};
+
+export const importOverdueSaveAndNext = (importId, stepName) => {
+  return async dispatch => {
+    try {
+      startGeneralLoaderOnRequest('saveAndNextIOLoader');
+      const response = await ImportOverdueApiServices.importOverdueSaveAndNext(importId, stepName);
+      if (response?.data?.status === 'SUCCESS') {
+        dispatch({
+          type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.UPDATE_DATA_ON_SUCCESS,
+          data: response?.data?.data,
+        });
+        stopGeneralLoaderOnSuccessOrFail('saveAndNextIOLoader');
+        return true;
+      }
+      return true;
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('saveAndNextIOLoader');
+      displayErrors(e);
+      throw Error();
+    }
+  };
+};
+
+export const resetImportOverdueStepper = () => {
+  return dispatch => {
+    dispatch({
+      type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.RESET_STEPPER_DATA,
+    });
+  };
+};
+
+export const setImportedFile = file => {
+  return dispatch => {
+    dispatch({
+      type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.SET_FILE,
+      file,
+    });
+  };
+};
+
+export const updateImportOverdueData = (step, error) => {
+  return dispatch => {
+    dispatch({
+      type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.UPDATE_DATA_ERROR,
+      step,
+      error,
+    });
+  };
+};
+
+export const importOverdueUploadDump = (data, config) => {
+  return async dispatch => {
+    try {
+      startGeneralLoaderOnRequest('saveAndNextIOLoader');
+      const response = await ImportOverdueApiServices.uploadOverdueDump(data, config);
+      if (response?.data?.status === 'SUCCESS') {
+        dispatch({
+          type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.UPDATE_DATA_ON_SUCCESS,
+          data: response?.data?.data,
+        });
+        stopGeneralLoaderOnSuccessOrFail('saveAndNextIOLoader');
+      }
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('saveAndNextIOLoader');
+      if (e?.response?.data?.status === 'MISSING_HEADERS') {
+        dispatch({
+          type: OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.UPDATE_DATA_ERROR,
+          step: 'importFile',
+          error: e?.response?.data?.message,
+        });
+      } else {
+        displayErrors(e);
+      }
+      throw Error();
     }
   };
 };

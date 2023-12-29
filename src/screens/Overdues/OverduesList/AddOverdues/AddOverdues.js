@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import moment from 'moment';
+import ImportOverdueModal from '../../ImportOverdue/ImportOverdueModal';
 import Input from '../../../../common/Input/Input';
 import Modal from '../../../../common/Modal/Modal';
 import Button from '../../../../common/Button/Button';
@@ -653,12 +654,15 @@ const AddOverdues = () => {
                   onChange={() => setIsNilOverdue(e => !e)}
                 />
               )}
-              <Button
-                buttonType="success"
-                title="Add New"
-                isDisabled={isNilOverdue}
-                onClick={toggleOverdueFormModal}
-              />
+              <div className="page-header-button-container">
+                <ImportOverdueModal />
+                <Button
+                  buttonType="success"
+                  title="Add New"
+                  isDisabled={isNilOverdue}
+                  onClick={toggleOverdueFormModal}
+                />
+              </div>
             </div>
             <AddOverdueTable
               setIsAmendOverdueModal={setIsAmendOverdueModal}

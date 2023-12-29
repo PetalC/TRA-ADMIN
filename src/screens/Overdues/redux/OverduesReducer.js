@@ -24,6 +24,15 @@ const initialOverdueState = {
     ninetyPlusDaysAmount: '',
     outstandingAmount: '',
   },
+  importOverdue: {
+    activeStep: 0,
+    importId: '',
+    importFile: {
+      file: null,
+      error: '',
+    },
+    importData: {},
+  },
 };
 
 export const overdue = (state = initialOverdueState, action) => {
@@ -197,6 +206,71 @@ export const overdue = (state = initialOverdueState, action) => {
         },
       };
     }
+
+    // import application
+    case OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.GO_TO_NEXT_STEP:
+      return {
+        ...state,
+        importOverdue: {
+          ...state?.importOverdue,
+          activeStep: (state?.importOverdue?.activeStep ?? 0) + 1,
+        },
+      };
+
+    case OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.RESET_STEPPER_DATA:
+      return {
+        ...state,
+        importOverdue: initialOverdueState.importOverdue,
+      };
+
+    case OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.SET_FILE:
+      return {
+        ...state,
+        importOverdue: {
+          ...state?.importOverdue,
+          importFile: {
+            ...state?.importOverdue?.importFile,
+            file: action.file,
+          },
+        },
+      };
+
+    case OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.UPDATE_DATA_ERROR:
+      return {
+        ...state,
+        importOverdue: {
+          ...state?.importOverdue,
+          [action.step]: {
+            ...state?.importOverdue?.[action.step],
+            error: action.error,
+          },
+        },
+      };
+
+    case OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.DELETE_IMPORTED_FILE:
+      return {
+        ...state,
+        importOverdue: {
+          ...state?.importOverdue,
+          importFile: {
+            ...state?.importOverdue?.importFile,
+            file: null,
+          },
+        },
+      };
+
+    case OVERDUE_REDUX_CONSTANTS.IMPORT_OVERDUE.UPDATE_DATA_ON_SUCCESS:
+      // eslint-disable-next-line no-case-declarations
+      let id = state?.importOverdue?.importId;
+      if (action?.data?.importId) id = action?.data?.importId;
+      return {
+        ...state,
+        importOverdue: {
+          ...state?.importOverdue,
+          importId: id,
+          importData: action.data,
+        },
+      };
 
     case LOGIN_REDUX_CONSTANTS.LOGOUT_USER_ACTION:
       return null;
