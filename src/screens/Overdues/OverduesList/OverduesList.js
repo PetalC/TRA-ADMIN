@@ -447,7 +447,7 @@ const OverduesList = () => {
                 buttonType="secondary"
                 title="filter_list"
                 className="mr-10"
-                buttonTitle="Click to apply filters on application list"
+                buttonTitle="Click to apply filters on overdue list"
                 onClick={() => toggleFilterModal()}
               />
               {isOverdueUpdatable && (

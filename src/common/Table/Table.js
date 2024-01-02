@@ -181,6 +181,7 @@ const Table = props => {
       const finalObj = {
         id: e._id ?? e.id ?? index,
       };
+      finalObj.reason = e.reason ?? '';
       headers.forEach(f => {
         finalObj[`${f.name}`] = processTableDataByType({ header: f, row: e, actions });
       });
@@ -529,6 +530,8 @@ function Row(props) {
                 </td>
               );
             case 'dataToExpand':
+              return null;
+            case 'reason':
               return null;
             default:
               return (

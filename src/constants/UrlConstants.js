@@ -377,4 +377,8 @@ export const OVERDUE_URLS = {
   CHANGE_OVERDUE_STATUS: `${BASE_URL}overdue/status/`,
   SAVE_OVERDUE_LIST: `${BASE_URL}overdue/list/`,
   DOWNLOAD_OVERDUES: `${BASE_URL}overdue/download`,
+  IMPORT_OVERDUE_URLS: {
+    DOWNLOAD_SAMPLE: `${BASE_URL}import-overdue-dump/sample-file/`,
+    UPLOAD_DUMP: `${BASE_URL}import-overdue-dump/`,
+  },
 };
