@@ -8,7 +8,11 @@ import ImportOverdueValidateStep from './Components/ImportOverdueValidateStep/Im
 import ImportOverdueABNLookUpStep from './Components/ImportOverdueABNLookUpStep/ImportOverdueABNLookUpStep';
 import ImportOverdueGenerateOverdueStep from './Components/ImportOverdueGenerateOverdueStep/ImportOverdueGenerateOverdueStep';
 import ImportOverdueDownloadSample from './Components/ImportOverdueDownloadSample/ImportOverdueDownloadSample';
-import { importOverdueGoToNextStep, importOverdueSaveAndNext } from '../redux/OverduesAction';
+import {
+  importOverdueGoToNextStep,
+  importOverdueSaveAndNext,
+  resetImportOverdueStepper,
+} from '../redux/OverduesAction';
 import { importOverdueImportStepValidations } from './Components/ImportOverdueImportStep/ImportOverdueImportStepValidations';
 import { errorNotification } from '../../../common/Toast';
 
@@ -73,6 +77,7 @@ const ImportOverdueStepper = ({ oncancelImportOverdueModal }) => {
         case 'abnLookUp':
           return dispatch(importOverdueSaveAndNext(importId, 'GENERATE_OVERDUES'));
         case 'generateOverdue':
+          dispatch(resetImportOverdueStepper());
           history.push(`/over-dues`);
           return true;
         default:
@@ -87,7 +92,6 @@ const ImportOverdueStepper = ({ oncancelImportOverdueModal }) => {
   const onClickNextStep = useCallback(async () => {
     if (toBeProcessedOverdueCount !== 0) {
       const result = await validate();
-      console.log('result: ', result);
       if (result && activeStep < STEPS.length - 1) {
         dispatch(importOverdueGoToNextStep());
       }
