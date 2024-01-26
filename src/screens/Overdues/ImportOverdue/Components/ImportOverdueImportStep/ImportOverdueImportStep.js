@@ -34,8 +34,6 @@ const ImportOverdueImportStep = () => {
       const checkExtension =
         fileExtension.indexOf(e.target.files[0].name.split('.').splice(-1)[0]) !== -1;
       const checkMimeTypes = mimeType.indexOf(e.target.files[0].type) !== -1;
-      console.log('checkExtension : ', checkExtension);
-      console.log('mimeType : ', mimeType);
       if (!(checkExtension || checkMimeTypes)) {
         errorNotification('Only excel file types are allowed');
       } else {
