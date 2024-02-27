@@ -503,6 +503,10 @@ export const debtorsManagement = (state = initialDebtorState, action) => {
     case DEBTORS_REDUX_CONSTANTS.DOCUMENTS.DOCUMENT_TYPE_LIST_DATA:
       return {
         ...state,
+        documents: {
+          ...state?.documents,
+          documentTypeList: action?.data,
+        },
         editDebtor: {
           ...state?.editDebtor,
           documents: {
