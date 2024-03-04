@@ -28,15 +28,15 @@ const ImportOverdueValidateStep = () => {
   console.log('docs: ', docs);
   console.log('ReasonColumn: ', ReasonColumn);
   return (
-    <div className="ia-validate-step">
-      <div className="ia-validate-count">
+    <div className="io-validate-step">
+      <div className="io-validate-count">
         <div className="font-success f-16">{`To Be Processed : ${
           toBeProcessedOverdueCount ?? 0
         }`}</div>
         <div className="font-danger f-16 mt-10">{`Rejected : ${docs?.length ?? 0}`}</div>
       </div>
       {docs?.length > 0 && (
-        <div className="ia-validate-table mt-10">
+        <div className="io-validate-table mt-10">
           <Table
             align="left"
             valign="center"

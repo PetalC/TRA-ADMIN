@@ -58,8 +58,8 @@ const ImportOverdueImportStep = () => {
   }, [file]);
 
   return (
-    <div className="ia-import-file-step">
-      <div className="ia-file-icon mt-10">
+    <div className="io-import-file-step">
+      <div className="io-file-icon mt-10">
         <IconButton buttonType="primary" title="cloud_upload" onClick={handleClick} />
         <input
           type="file"
@@ -67,14 +67,14 @@ const ImportOverdueImportStep = () => {
           ref={hiddenFileInput}
           onChange={handleChange}
         />
-        <span className="ia-file-text mt-10 cursor-pointer" onClick={handleClick}>
+        <span className="io-file-text mt-10 cursor-pointer" onClick={handleClick}>
           Import File
         </span>
       </div>
       {file && (
-        <div className="ia-import-file-name mt-10">
-          <div className="ia-file-name">{file.name}</div>
-          <div className="ia-action-buttons">
+        <div className="io-import-file-name mt-10">
+          <div className="io-file-name">{file.name}</div>
+          <div className="io-action-buttons">
             <span
               className="material-icons-round font-field cursor-pointer"
               onClick={() => downloadImportedFile(file)}

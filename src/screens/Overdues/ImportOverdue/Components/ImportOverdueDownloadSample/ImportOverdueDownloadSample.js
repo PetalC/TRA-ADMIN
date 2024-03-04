@@ -13,15 +13,15 @@ const ImportOverdueDownloadSample = () => {
     if (res) downloadAll(res);
   }, []);
   return (
-    <div className="ia-download-step">
-      <div className="ia-file-icon mt-10">
+    <div className="io-download-step">
+      <div className="io-file-icon mt-10">
         <IconButton
           buttonType="primary-1"
           title="cloud_download"
           onClick={downloadSampleFile}
           isLoading={downloadODSampleFileLoaderButton}
         />
-        <span className="ia-file-text mt-10">Download Sample File</span>
+        <span className="io-file-text mt-10">Download Sample File</span>
       </div>
     </div>
   );
