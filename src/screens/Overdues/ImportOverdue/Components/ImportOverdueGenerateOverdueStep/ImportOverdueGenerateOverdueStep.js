@@ -25,23 +25,23 @@ const ImportOverdueGenerateOverdueStep = () => {
     []
   );
   return (
-    <div className="ia-generate-step">
-      <div className="ia-generate-status-count">
-        <div className="ia-validate-count">
+    <div className="io-generate-step">
+      <div className="io-generate-status-count">
+        <div className="io-validate-count">
           <div className="font-success f-16">{`To Be Processed : ${
             toBeProcessedOverdueCount ?? 0
           }`}</div>
           <div className="font-danger f-16 mt-10">{`Rejected : ${docs?.length ?? 0}`}</div>
         </div>
         {status === 'SUCCESS' && (
-          <div className="ia-import-status">
+          <div className="io-import-status">
             <span className="material-icons-round font-success f-h2">verified</span>
-            <div className="ia-generate-message font-success ml-5">{message}</div>
+            <div className="io-generate-message font-success ml-5">{message}</div>
           </div>
         )}
       </div>
       {docs?.length > 0 && (
-        <div className="ia-validate-table mt-10">
+        <div className="io-validate-table mt-10">
           <Table
             align="left"
             valign="center"
