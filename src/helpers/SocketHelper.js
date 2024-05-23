@@ -15,6 +15,7 @@ const TYPE = 'user';
 let socket = null;
 
 export const dispatchActionsOnSocketEvents = data => {
+  console.log(data.type);
   switch (data.type) {
     case HEADER_NOTIFICATION_REDUX_CONSTANTS.TASK_ASSIGNED:
     case HEADER_NOTIFICATION_REDUX_CONSTANTS.TASK_UPDATED:
@@ -35,6 +36,10 @@ export const dispatchActionsOnSocketEvents = data => {
       break;
     case USER_MANAGEMENT_REDUX_CONSTANTS.PRIVILEGES.UPDATE_USER_PRIVILEGE:
       store.dispatch(getAllUserPrivileges());
+      break;
+
+    case HEADER_NOTIFICATION_REDUX_CONSTANTS.OVERDUE_BULKUPLOADED:
+      store.dispatch(updateHeaderNotificationOnNewNotificationAction(data.data))
       break;
     default:
       break;

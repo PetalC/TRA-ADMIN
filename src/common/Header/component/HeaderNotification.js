@@ -64,14 +64,14 @@ const HeaderNotification = () => {
     []
   );
 
-  const onClickNotification = useCallback(notification => {
+  const onClickNotification = useCallback(async notification => {
     if (notification?.entityType === 'alert') {
       setNotificationDrawer(false);
       dispatch(getNotificationAlertsDetail(notification?.entityId?._id));
       setIsAlertModal(true);
     } else {
-      const { entityType, entityId, hasSubModule, subModule, description } = notification;
-      handleGlobalSearchSelect(history, entityType, entityId, hasSubModule, subModule, description);
+      const { entityType, entityId, hasSubModule, subModule, description, csvId } = notification;
+      handleGlobalSearchSelect(history, entityType, entityId, hasSubModule, subModule, description, csvId);
       setNotificationDrawer(false);
     }
   }, []);

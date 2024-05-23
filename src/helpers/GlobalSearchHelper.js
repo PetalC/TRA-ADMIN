@@ -55,7 +55,7 @@ const handleSearchWithSubModules = (path, module, hasSubModule, subModule, histo
   history.push(path);
 };
 
-export const handleGlobalSearchSelect = (history, module, id, hasSubModule, subModule, status) => {
+export const handleGlobalSearchSelect = async (history, module, id, hasSubModule, subModule, status, csvId="") => {
   try {
     switch (module) {
       case 'task':
@@ -98,7 +98,9 @@ export const handleGlobalSearchSelect = (history, module, id, hasSubModule, subM
       case 'claim':
         handleSearchWithSubModules(`/claims/view/${id}`, module, hasSubModule, subModule, history);
         break;
-
+      case 'uploaded-overdue-csv':
+        handleSearchWithSubModules(`clients/client/view/${id}?csvId=${csvId}`, 'client', true, 'overdues', history);
+        break;
       default:
         history.push('/dashboard');
     }

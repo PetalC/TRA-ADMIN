@@ -1314,6 +1314,25 @@ export const getClientOverdueList = (param, id) => {
   };
 };
 
+export const getOverdueListbyCsvId = (id) => {
+  return async dispatch => {
+    try {
+      startGeneralLoaderOnRequest('clientOverdueListPageLoaderAction');
+      const response = await ClientOverdueApiServices.getOverdueListbyCsvId(id);
+      if (response?.data?.status === 'SUCCESS') {
+        dispatch({
+          type: CLIENT_REDUX_CONSTANTS.CLIENT_OVERDUE.GET_CLIENT_OVERDUE_LIST,
+          data: response?.data?.data,
+        });
+        stopGeneralLoaderOnSuccessOrFail('clientOverdueListPageLoaderAction');
+      }
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('clientOverdueListPageLoaderAction');
+      displayErrors(e);
+    }
+  };
+};
+
 export const getClientOverdueEntityDetails = () => {
   return async dispatch => {
     try {
@@ -1329,6 +1348,43 @@ export const getClientOverdueEntityDetails = () => {
     }
   };
 };
+
+export const getUploadedOverdueCsvList = (param, id) => {
+  return async dispatch =>{
+    try{
+      startGeneralLoaderOnRequest('uploadedOverdueCsvListLoaderAction');
+      const response = await ClientOverdueApiServices.getUploadedOverdueCsvList(param, id);
+      if (response?.data?.status === 'SUCCESS') {
+        dispatch({
+          type: CLIENT_REDUX_CONSTANTS.CLIENT_OVERDUE.GET_CLIENT_UPLOADED_OVERDUE_CSV_LIST,
+          data: response?.data?.data,
+        })
+        stopGeneralLoaderOnSuccessOrFail('uploadedOverdueCsvListLoaderAction');
+      }
+    }
+    catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('uploadedOverdueCsvListLoaderAction');
+      displayErrors(e);
+    }
+  }
+}
+
+export const undoUploadedCsv = (csvId) => {
+  return async dispatch =>{
+    try{
+      const response = await ClientOverdueApiServices.undoUploadedCsv(csvId);
+
+      if (response?.data?.status === 'SUCCESS') {
+        dispatch({
+          type: CLIENT_REDUX_CONSTANTS.CLIENT_OVERDUE.UNDO_UPLOADED_CSV,
+        })
+      }
+    }
+    catch (e) {
+      displayErrors(e);
+    }
+  }
+}
 
 export const resetClientOverdueListData = () => {
   return dispatch => {

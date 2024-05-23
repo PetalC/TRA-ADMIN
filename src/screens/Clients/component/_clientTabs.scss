@@ -46,3 +46,22 @@
   width: 100%;
   overflow-x: auto;
 }
+
+
+.csv-table {
+  .table-item{
+    padding: 10px 20px;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: space-between;
+    .table-cell{
+      display: flex;
+      align-items: center;
+      margin: 0 auto;
+    }
+  }
+  .table-item:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+}
