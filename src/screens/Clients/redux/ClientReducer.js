@@ -637,7 +637,16 @@ export const clientManagement = (state = initialClientListState, action) => {
         },
       };
     }
-
+    case CLIENT_REDUX_CONSTANTS.CLIENT_OVERDUE.GET_CLIENT_UPLOADED_OVERDUE_CSV_LIST: {
+      return {
+        ...state,
+        overdue: {
+          ...state?.overdue,
+          uploadedOverdueCsvList: action?.data,
+        },
+      };
+    }
+    case CLIENT_REDUX_CONSTANTS.CLIENT_OVERDUE.UNDO_UPLOADED_CSV:
     default:
       return state;
   }

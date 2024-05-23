@@ -7,7 +7,7 @@ import { LOGIN_REDUX_CONSTANTS } from '../../screens/auth/login/redux/LoginRedux
 import { store } from '../../redux/store';
 
 const instance = axios.create({
-  timeout: 20000,
+  timeout: 50000,
   params: {}, // do not remove this, its added to add params later in the config
 });
 

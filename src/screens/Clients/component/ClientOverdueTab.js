@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import BigInput from '../../../common/BigInput/BigInput';
@@ -18,14 +18,17 @@ import {
 import Select from '../../../common/Select/Select';
 import UserPrivilegeWrapper from '../../../common/UserPrivilegeWrapper/UserPrivilegeWrapper';
 import { SIDEBAR_NAMES } from '../../../constants/SidebarConstants';
+import UploadedCsvTable from './UploadedCsvTable'
 
 const ClientOverdueTab = () => {
   const searchInputRef = useRef();
   const { id } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const [newSubmissionDetails, setNewSubmissionDetails] = useState({});
   const [newSubmissionModal, setNewSubmissionModal] = useState(false);
+  const [uploadedDataModal, setUploadedDataModal] = useState(false);
 
   const entityList = useSelector(
     ({ clientManagement }) => clientManagement?.overdue?.entityList ?? {}
@@ -64,14 +67,13 @@ const ClientOverdueTab = () => {
 
   useEffect(async () => {
     dispatch(getClientOverdueEntityDetails());
+    const csvId = new URLSearchParams(location.search).get('csvId');
+    await getOverdueListByFilter({csvId: csvId ?? -1});
     return () => {
       dispatch(resetClientOverdueListData());
     };
   }, []);
 
-  useEffect(async () => {
-    await getOverdueListByFilter();
-  }, [id]);
 
   const pageActionClick = useCallback(
     async newPage => {
@@ -109,6 +111,10 @@ const ClientOverdueTab = () => {
     setNewSubmissionModal(e => !e);
   }, []);
 
+  const onCloseUploadedDataModal = useCallback(() => {
+    setUploadedDataModal(e => !e);
+  }, []);
+
   const newSubmissionButtons = useMemo(
     () => [
       {
@@ -123,6 +129,16 @@ const ClientOverdueTab = () => {
       },
     ],
     [onAddNewSubmission, onCloseNewSubmissionModal]
+  );
+  const uploadedDataModalButtons = useMemo(
+    () => [
+      {
+        title: 'Close',
+        buttonType: 'primary-1',
+        onClick: onCloseUploadedDataModal,
+      },
+    ],
+    [onCloseUploadedDataModal]
   );
 
   const checkIfEnterKeyPressed = async e => {
@@ -156,6 +172,13 @@ const ClientOverdueTab = () => {
               />
               <UserPrivilegeWrapper moduleName={SIDEBAR_NAMES.CLIENT}>
                 <UserPrivilegeWrapper moduleName={SIDEBAR_NAMES.OVERDUE}>
+                  <Button
+                    buttonType="primary"
+                    title="Uploaded Data"
+                    onClick={() => {
+                      setUploadedDataModal(e => !e);
+                    }}
+                  />
                   <Button
                     buttonType="success"
                     title="New Submission"
@@ -221,6 +244,17 @@ const ClientOverdueTab = () => {
                 />
                 <span className="material-icons-round">expand_more</span>
               </div>
+            </Modal>
+          )}
+          {uploadedDataModal && (
+            <Modal
+              header="Uploaded Data"
+              className="uploaded-data-modal"
+              headerClassName="left-aligned-modal-header"
+              buttons={uploadedDataModalButtons}
+              hideModal={setUploadedDataModal}
+            >
+              <UploadedCsvTable />
             </Modal>
           )}
         </>
