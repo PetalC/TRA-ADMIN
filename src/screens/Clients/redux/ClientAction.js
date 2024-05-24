@@ -1580,3 +1580,21 @@ export const downloadClientTabApplicationCSV = id => {
     return false;
   };
 };
+
+export const downloadClientOverdueList = ids => {
+  return async () => {
+    try {
+      startGeneralLoaderOnRequest('downloadOverdueListLoaderAction');
+      const response = await ClientOverdueApiServices.downloadOverduelist({ids:ids ?? []});
+      if (response?.statusText === 'OK') {
+        stopGeneralLoaderOnSuccessOrFail(`downloadOverdueListLoaderAction`);
+        return response;
+      }
+    } catch (e) {
+      stopGeneralLoaderOnSuccessOrFail('downloadOverdueListLoaderAction');
+      displayErrors(e);
+      throw Error();
+    }
+    return false;
+  }
+};

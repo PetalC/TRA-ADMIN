@@ -14,11 +14,14 @@ import {
   getClientOverdueEntityDetails,
   getClientOverdueList,
   resetClientOverdueListData,
+  downloadClientOverdueList,
 } from '../redux/ClientAction';
 import Select from '../../../common/Select/Select';
 import UserPrivilegeWrapper from '../../../common/UserPrivilegeWrapper/UserPrivilegeWrapper';
 import { SIDEBAR_NAMES } from '../../../constants/SidebarConstants';
 import UploadedCsvTable from './UploadedCsvTable'
+import IconButton from '../../../common/IconButton/IconButton';
+import { downloadAll } from '../../../helpers/DownloadHelper';
 
 const ClientOverdueTab = () => {
   const searchInputRef = useRef();
@@ -34,7 +37,7 @@ const ClientOverdueTab = () => {
     ({ clientManagement }) => clientManagement?.overdue?.entityList ?? {}
   );
 
-  const { clientOverdueListPageLoaderAction } = useSelector(
+  const { clientOverdueListPageLoaderAction, downloadOverdueListLoaderAction } = useSelector(
     ({ generalLoaderReducer }) => generalLoaderReducer ?? false
   );
 
@@ -153,6 +156,21 @@ const ClientOverdueTab = () => {
       }
     }
   };
+
+  const downloadOverdueList = async () => {
+    let ids =[];
+    docs.forEach(doc => {
+      doc.debtors?.forEach(debtor => {
+        ids = [...ids, debtor?._id];
+      })
+    });
+    try {
+      const response = await dispatch(downloadClientOverdueList(ids));
+      if(response) downloadAll(response);
+    } catch (e) {
+      /**/
+    }
+  }
   return (
     <>
       {!clientOverdueListPageLoaderAction ? (
@@ -186,6 +204,14 @@ const ClientOverdueTab = () => {
                   />
                 </UserPrivilegeWrapper>
               </UserPrivilegeWrapper>
+              <IconButton
+                buttonType="primary-1"
+                title="cloud_download"
+                className="mr-10"
+                buttonTitle="Click to download overdues"
+                onClick={downloadOverdueList}
+                isLoading={downloadOverdueListLoaderAction}
+              />
             </div>
           </div>
           {docs?.length > 0 ? (

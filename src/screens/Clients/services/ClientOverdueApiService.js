@@ -18,5 +18,14 @@ export const ClientOverdueApiServices = {
   },
   getOverdueListbyCsvId: (id) => {
     return ApiService.getData(`${CLIENT_URLS.CLIENT_OVERDUE.GET_OVERDUE_LIST_BY_ID}${id}`);
+  },
+  downloadOverduelist : (params) => {
+    return ApiService.request({
+      url: `${CLIENT_URLS.CLIENT_OVERDUE.DOWNLOAD_CLIENT_OVERDUE_LIST}`,
+      method: 'GET',
+      responseType: 'blob',
+      timeout: 60000,
+      params: params ?? [],
+    });
   }
 };

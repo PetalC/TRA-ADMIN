@@ -175,7 +175,8 @@ export const CLIENT_URLS = {
     GET_CLIENT_UPLOADED_OVERDUE_CSV_LIST: `${BASE_URL}overdue/uploaded-csv-list/`,
     UNDO_UPLOADED_CSV: `${BASE_URL}overdue/undo-uploaded-csv/`,
     GET_CLIENT_ID_BY_CSV_ID: `${BASE_URL}overdue/client-id-by-csv-id/`,
-    GET_OVERDUE_LIST_BY_ID: `${BASE_URL}overdue/get-overdue-list-by-id/`
+    GET_OVERDUE_LIST_BY_ID: `${BASE_URL}overdue/get-overdue-list-by-id/`,
+    DOWNLOAD_CLIENT_OVERDUE_LIST: `${BASE_URL}overdue/download/overdue-list/`
   },
   CLIENT_CLAIMS: {
     CLIENT_CLAIMS_LIST: `${BASE_URL}claim/`,
