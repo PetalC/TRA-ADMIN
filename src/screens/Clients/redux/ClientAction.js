@@ -1291,6 +1291,33 @@ export const resetViewClientData = () => {
 };
 
 // overdue
+export const UploadOverdueCSV = (data, config) => {
+  return async () => {
+    try {
+      startGeneralLoaderOnRequest('UploadCsvLoaderAction');
+      const response = await ClientOverdueApiServices.uploadOverdueCSV(data, config);
+
+      if (response?.data?.status === 'SUCCESS') {
+        stopGeneralLoaderOnSuccessOrFail(`UploadCsvLoaderAction`);
+        successNotification('Uploaded successfully');
+      }
+    } catch (e) {
+      if (e.response && e.response.data) {
+        stopGeneralLoaderOnSuccessOrFail(`UploadCsvLoaderAction`);
+        if (e.response?.data?.status === undefined) {
+          errorNotification('It seems like server is down, Please try again later.');
+        } else if (e.response?.data?.status === 'INTERNAL_SERVER_ERROR') {
+          errorNotification('Internal server error');
+        } else if (e.response?.data?.status === 'ERROR') {
+          errorNotification('It seems like server is down, Please try again later.');
+        }
+
+        throw Error();
+      }
+    }
+  };
+};
+
 export const getClientOverdueList = (param, id) => {
   return async dispatch => {
     try {

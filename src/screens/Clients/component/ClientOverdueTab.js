@@ -6,11 +6,14 @@ import moment from 'moment';
 import BigInput from '../../../common/BigInput/BigInput';
 import Table from '../../../common/Table/Table';
 import Pagination from '../../../common/Pagination/Pagination';
+import Input from '../../../common/Input/Input';
+import CSVFileUpload from './CSVFileUpload';
 import Loader from '../../../common/Loader/Loader';
 import { errorNotification } from '../../../common/Toast';
 import Button from '../../../common/Button/Button';
 import Modal from '../../../common/Modal/Modal';
 import {
+  UploadOverdueCSV,
   getClientOverdueEntityDetails,
   getClientOverdueList,
   resetClientOverdueListData,
@@ -32,6 +35,23 @@ const ClientOverdueTab = () => {
   const [newSubmissionDetails, setNewSubmissionDetails] = useState({});
   const [newSubmissionModal, setNewSubmissionModal] = useState(false);
   const [uploadedDataModal, setUploadedDataModal] = useState(false);
+  const [csvFileName, setCsvFileName] = useState('Browse...');
+  const [csvFile, setCsvFile] = useState(null);
+  const loggedUserDetail = useSelector(({ loggedUserProfile }) => loggedUserProfile);
+  const { UploadCsvLoaderAction } = useSelector(
+    ({ generalLoaderReducer }) => generalLoaderReducer ?? false
+  );
+  const { _id, name } = useMemo(() => {
+    if (loggedUserDetail) {
+      // eslint-disable-next-line no-shadow
+      const { _id, name } = loggedUserDetail;
+      return {
+        _id: _id || '',
+        name: name || '',
+      };
+    }
+    return { _id: '', name: '' };
+  }, [loggedUserDetail]);
 
   const entityList = useSelector(
     ({ clientManagement }) => clientManagement?.overdue?.entityList ?? {}
@@ -49,6 +69,8 @@ const ClientOverdueTab = () => {
     [overdueListWithPageData]
   );
 
+  const [uploadOverduesModal, setUploadOverduesModal] = useState(false);
+  
   const getOverdueListByFilter = useCallback(
     async (params = {}, cb) => {
       const data = {
@@ -70,6 +92,7 @@ const ClientOverdueTab = () => {
 
   useEffect(async () => {
     dispatch(getClientOverdueEntityDetails());
+    console.log(UploadCsvLoaderAction);
     const csvId = new URLSearchParams(location.search).get('csvId');
     await getOverdueListByFilter({csvId: csvId ?? -1});
     return () => {
@@ -133,6 +156,7 @@ const ClientOverdueTab = () => {
     ],
     [onAddNewSubmission, onCloseNewSubmissionModal]
   );
+
   const uploadedDataModalButtons = useMemo(
     () => [
       {
@@ -171,6 +195,54 @@ const ClientOverdueTab = () => {
       /**/
     }
   }
+  const handleCsvFileChange = useCallback(e => {
+    e.persist();
+
+    if (e.target.files && e.target.files.length > 0) {
+      setCsvFileName(e.target.files[0].name ? e.target.files[0].name : 'Browse...');
+      setCsvFile(e.target.files[0]);
+    }
+  }, []);
+
+  const onUploadOverdues = useCallback(async () => {
+    try {
+      if (!csvFile) {
+        throw new Error('Please select csv file.');
+      }
+
+      const formData = new FormData();
+      console.log(formData)
+      formData.append('overdue-csv', csvFile);
+      formData.append('id', id);
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      };
+      await dispatch(UploadOverdueCSV(formData, config));
+
+      setCsvFileName('Browse...');
+      setCsvFile(null);
+      setUploadOverduesModal(e => !e);
+      await getOverdueListByFilter();
+
+    } catch (error) {
+      errorNotification(error.message);
+    }
+  }, [csvFile, _id]);
+
+  const onCloseUploadOverduesModal = ()=>{
+    setUploadOverduesModal(e => !e);
+  }
+
+  const uploadOverduesButtons = useMemo(
+    () => {
+      return [
+      { title: 'Close', buttonType: 'primary-1', onClick: onCloseUploadOverduesModal },
+      { title: 'Upload', buttonType: 'primary', onClick: onUploadOverdues, isLoading: UploadCsvLoaderAction},
+    ]},
+    [onCloseUploadOverduesModal],
+  );
   return (
     <>
       {!clientOverdueListPageLoaderAction ? (
@@ -188,22 +260,6 @@ const ClientOverdueTab = () => {
                 placeholder="Search here"
                 onKeyUp={checkIfEnterKeyPressed}
               />
-              <UserPrivilegeWrapper moduleName={SIDEBAR_NAMES.CLIENT}>
-                <UserPrivilegeWrapper moduleName={SIDEBAR_NAMES.OVERDUE}>
-                  <Button
-                    buttonType="primary"
-                    title="Uploaded Data"
-                    onClick={() => {
-                      setUploadedDataModal(e => !e);
-                    }}
-                  />
-                  <Button
-                    buttonType="success"
-                    title="New Submission"
-                    onClick={() => setNewSubmissionModal(e => !e)}
-                  />
-                </UserPrivilegeWrapper>
-              </UserPrivilegeWrapper>
               <IconButton
                 buttonType="primary-1"
                 title="cloud_download"
@@ -212,6 +268,23 @@ const ClientOverdueTab = () => {
                 onClick={downloadOverdueList}
                 isLoading={downloadOverdueListLoaderAction}
               />
+              <UserPrivilegeWrapper moduleName={SIDEBAR_NAMES.CLIENT}>
+                <UserPrivilegeWrapper moduleName={SIDEBAR_NAMES.OVERDUE}>
+                  <Button
+                    buttonType="success"
+                    title="New Submission"
+                    onClick={() => setNewSubmissionModal(e => !e)}
+                  />
+                  <Button className="mr-10" buttonType="primary" title="Upload Overdues" onClick={() => setUploadOverduesModal(e => !e)} />
+                  <Button
+                    buttonType="primary"
+                    title="Uploaded Data"
+                    onClick={() => {
+                      setUploadedDataModal(e => !e);
+                    }}
+                  />
+                </UserPrivilegeWrapper>
+              </UserPrivilegeWrapper>
             </div>
           </div>
           {docs?.length > 0 ? (
@@ -272,6 +345,33 @@ const ClientOverdueTab = () => {
               </div>
             </Modal>
           )}
+
+          {uploadOverduesModal && (
+            <Modal
+              header="Upload Overdues"
+              className="upload-overdues-modal"
+              buttons={uploadOverduesButtons}
+              hideModal={onCloseUploadOverduesModal}
+            >
+              <div className="upload-form-container">
+                <div className="filter-modal-row">
+                  <div className="form-title">User</div>
+                  <Input type="text" name="upload-user" value={name} disabled />
+                </div>
+
+                <div className="filter-modal-row">
+                  <div className="form-title">Date</div>
+                  <Input type="text" name="upload-date" value={moment(new Date()).format('MM/DD/YYYY')} disabled />
+                </div>
+
+                <div className="filter-modal-row">
+                  <div className="form-title">CSV File</div>
+                  <CSVFileUpload id="csv-file" fileName={csvFileName} handleChange={handleCsvFileChange} />
+                </div>
+              </div>
+            </Modal>
+          )}
+
           {uploadedDataModal && (
             <Modal
               header="Uploaded Data"

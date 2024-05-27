@@ -170,6 +170,7 @@ export const CLIENT_URLS = {
     },
   },
   CLIENT_OVERDUE: {
+    UPLOAD_OVERDUE_CSV: `${BASE_URL}overdue/upload-csv/`,
     GET_CLIENT_OVERDUE_LIST: `${BASE_URL}overdue/`,
     GET_CLIENT_CLAIMS_ENTITY_LIST: `${BASE_URL}overdue/entity-list/`,
     GET_CLIENT_UPLOADED_OVERDUE_CSV_LIST: `${BASE_URL}overdue/uploaded-csv-list/`,
