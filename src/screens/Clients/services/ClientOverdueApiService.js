@@ -2,6 +2,7 @@ import ApiService from '../../../services/api-service/ApiService';
 import { CLIENT_URLS } from '../../../constants/UrlConstants';
 
 export const ClientOverdueApiServices = {
+  uploadOverdueCSV: (data, config) => ApiService.postData(CLIENT_URLS.CLIENT_OVERDUE.UPLOAD_OVERDUE_CSV, data, config),
   getClientOverdueList: (params, id) =>{
     return ApiService.getData(`${CLIENT_URLS.CLIENT_OVERDUE.GET_CLIENT_OVERDUE_LIST}${id}`, { params });
   },
